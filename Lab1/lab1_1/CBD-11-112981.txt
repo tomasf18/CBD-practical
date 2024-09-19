@@ -1,0 +1,18 @@
+SET name
+SET name 'Tomás'
+Get name
+set idade 20
+get idade
+exit
+set 1 [1, 2, 3, 4]
+set 1 '{1, 2, 3}'
+get 1
+append 1 a
+get 1
+incr 1
+exists 1
+exists 1abs
+expire 1 1
+get 1
+ttl a
+exit
