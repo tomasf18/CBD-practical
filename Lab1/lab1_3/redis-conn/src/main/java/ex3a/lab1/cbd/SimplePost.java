@@ -9,10 +9,10 @@ public class SimplePost {
         Jedis jedis = new Jedis(); 
         // some users 
         String[] users = { "Ana", "Pedro", "Maria", "Luis" }; 
-        // jedis.del(USERS_KEY); // remove if exists to avoid wrong type 
+        jedis.del(USERS_KEY); // remove if exists to avoid wrong type 
         for (String user : users)  
             jedis.sadd(USERS_KEY, user); 
-            
+
         jedis.smembers(USERS_KEY).forEach(System.out::println); 
         jedis.close(); 
     } 
