@@ -40,7 +40,6 @@ public class NamesAutocomplete {
         while (!input.isEmpty()) {
             String pattern = input + "*";
 
-            System.out.println("Results:");
             results = jedis.keys(pattern);
             results.stream().sorted().forEach(System.out::println);
             System.out.print("\n\nSearch for (Enter for quit): ");
