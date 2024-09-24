@@ -80,5 +80,5 @@ So, all I needed to do was adding the necessary Jedis dependencies to the POM fi
 
 In both exercises, I trasfered all the data from the .txt and .csv files to the redis database.  
 Then, the only thing I had to do was to search on the database keys those which had as a substring the input provided by the user.  
-The only thing a little more complex was the lambda function I had to create on the ex b), so that I could compare all the results 
+The only thing a little more complex was the lambda expression I had to create on the ex b), so that I could compare all the results 
 using the number of registries.

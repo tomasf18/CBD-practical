@@ -62,7 +62,7 @@ public class NamesAutocompleteByRegistries {
                     System.out.println(name + " - " + jedis.get(name));
                 });
 
-            // the lambda function is using a comparator that compares the values of the keys in the redis database
+            // the lambda expression is using a comparator that compares the values of the keys in the redis database
             // and prints the names and the associated number of registries in descending order
 
             System.out.print("\n\nSearch for (Enter for quit): ");
