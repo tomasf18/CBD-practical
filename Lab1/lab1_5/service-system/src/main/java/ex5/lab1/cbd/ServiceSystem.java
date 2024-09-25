@@ -7,18 +7,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import redis.clients.jedis.Jedis; 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
-/**
- * Hello world!
- *
- */
 public class ServiceSystem {
+    private static final Logger logger = LogManager.getLogger(ServiceSystem.class);
+
     public static void main(String[] args) {
 
         Jedis jedis = new Jedis();
+        jedis.flushAll();
 
-        // data structure where i can find the info -  username: product, timestamp
-        Map<String, ArrayList<UserProduct>> users = new HashMap<String, ArrayList<UserProduct>>();
+        Map<String, ArrayList<UserProduct>> users = new HashMap<>();
 
         Scanner sc = new Scanner(System.in);
         
@@ -29,9 +29,9 @@ public class ServiceSystem {
         int timeslot = 30;  // per 30 seconds
         
         while (true) {
-            System.out.println("Press ENTER to exit.");
+            logger.info("Press ENTER to exit.");
     
-            System.out.print("username: ");
+            logger.info("username: ");
             username = sc.nextLine();
 
             if (username.equals(""))
@@ -44,25 +44,21 @@ public class ServiceSystem {
                     LocalDateTime request_timestamp = obj.getTimestamp();
                     LocalDateTime now = LocalDateTime.now();
 
-                    // Calculate the time difference between now and the timestamp
                     Duration duration = Duration.between(request_timestamp, now);
-                    long secondsPassed = duration.getSeconds();
+                    long seconds_passed = duration.getSeconds();
 
-                    if (secondsPassed > timeslot) { 
+                    if (seconds_passed > timeslot) { 
                         user_requests.remove(0);
-                    } else { // If not, then none of the remaining products were requested >30s ago (index 0 was the first one)
-                        System.out.format("Username '%s' already reached the requests limit (%d/%ds).\n", username, limit, timeslot);
+                    } else {
+                        logger.warn("Username '{}' already reached the requests limit ({}/{}) seconds.", username, limit, timeslot);
                         continue;
                     }
-                    
                 }
             } else {
                 users.put(username, new ArrayList<UserProduct>());
             }
 
-
-            System.out.print("product: ");
-
+            logger.info("product: ");
             product = sc.nextLine();
             jedis.sadd(username, product);
 
@@ -75,13 +71,12 @@ public class ServiceSystem {
     }
 }
 
-
 class UserProduct {
     private String productName;
     private LocalDateTime timestamp;
 
-    public UserProduct(String user, LocalDateTime tsp) {
-        productName = user;
+    public UserProduct(String product, LocalDateTime tsp) {
+        productName = product;
         timestamp = tsp;
     }
 
