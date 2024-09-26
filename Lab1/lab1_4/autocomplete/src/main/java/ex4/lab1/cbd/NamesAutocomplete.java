@@ -19,6 +19,7 @@ public class NamesAutocomplete {
 
         } catch (IOException e) {
             System.out.println("File error - 'names.txt': " + e.getMessage());
+            jedis.close();
             return; 
         }
 
@@ -34,6 +35,9 @@ public class NamesAutocomplete {
             System.out.print("\n\nSearch for (Enter for quit): ");
             input = sc.nextLine();
         }
+
+        jedis.close();
+        sc.close();
 
     }
 }
