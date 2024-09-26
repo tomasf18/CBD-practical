@@ -2,141 +2,92 @@ package ex5.lab1.cbd;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
-import java.util.Iterator;
-import redis.clients.jedis.Jedis; 
+import redis.clients.jedis.Jedis;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 public class ServiceSystemQuantity {
-    private static final Logger logger = LogManager.getLogger(ServiceSystemQuantity.class);
+    private static final Logger logger = LogManager.getLogger(ServiceSystem.class);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     public static void main(String[] args) {
-
         Jedis jedis = new Jedis();
-        jedis.flushAll();
+        jedis.flushAll();  // Clear the database to avoid key errors
 
-        Map<String, ArrayList<UserProductQuantity>> users = new HashMap<String, ArrayList<UserProductQuantity>>();
         Scanner sc = new Scanner(System.in);
-
         String username;
         String product;
-        int quant;
-        
-        int limit = 30;     // 30 poducts quantity
-        int timeslot = 30;  // per 30 seconds
+        int quantity;
+
+        int limit = 30;     // Max 30 units of products
+        int timeslot = 30;  // Time window in seconds
 
         while (true) {
             logger.info("Press ENTER to exit.");
-            
             logger.info("username: ");
             username = sc.nextLine();
-            
+
             if (username.equals(""))
                 break;
-            
+
             logger.info("product: ");
             product = sc.nextLine();
-            logger.info("Quantity: ");
-            quant = Integer.parseInt(sc.nextLine());
+            logger.info("quantity: ");
+            quantity = Integer.parseInt(sc.nextLine());
 
-            if (users.containsKey(username)) {
-                ArrayList<UserProductQuantity> user_requests = users.get(username);
-                int quantity_sum = 0;
+            // Check the total quantity of products requested in the last 'timeslot' seconds
+            String key = username + ":timestamps";
+            long totalQuantity = calculateCurrentQuantity(jedis, key, timeslot);
 
-                Iterator<UserProductQuantity> iterator = user_requests.iterator();
-                while (iterator.hasNext()) {
-                    UserProductQuantity prod_info = iterator.next();
-                    LocalDateTime request_timestamp = prod_info.getTimestamp();
-                    LocalDateTime now = LocalDateTime.now();
-                    
-                    Duration duration = Duration.between(request_timestamp, now);
-                    long seconds_passed = duration.getSeconds();
-                
-                    if (seconds_passed > timeslot) {
-                        iterator.remove();  
-                    } else {
-                        quantity_sum += prod_info.getQuantity();
-                    }
-                }
-
-                if (quantity_sum + quant > limit) {
-                    logger.warn("Username '{}' already reached the quantity limit ({} units / {} seconds).", username, limit, timeslot);
-                    continue;
-                }
-                  
-            } else {
-                users.put(username, new ArrayList<UserProductQuantity>());
+            // Check if adding the new request exceeds the limit
+            if (totalQuantity + quantity > limit) {
+                logger.warn("Username '{}' has reached the product quantity limit ({} units / {} seconds).", username, limit, timeslot);
+                continue;
             }
 
-            ArrayList<UserProductQuantity> user_requests = users.get(username);
-            UserProductQuantity prod = null;
-            for (UserProductQuantity prod_info : user_requests) {
-                if (prod_info.getProductName().equals(product)) {
-                    prod = prod_info;
-                    prod.addQuantity(quant);
-                    logger.info("Product {} - added {} units. Total: {}", prod.getProductName(), quant, prod.getQuantity());
-                    break;  
-                }
-            }
+            // Store the new product request and its quantity in Redis
+            addProductRequest(jedis, username, product, quantity);
 
-            if (prod == null) {
-                prod = new UserProductQuantity(product, quant, LocalDateTime.now());
-                user_requests.add(prod);
-                logger.info("Added new product: {} - {} units", prod.getProductName(), prod.getQuantity());
-            }
-
-            if (jedis.hget(username, product) == null) {
-                jedis.hset(username, product, "0");
-            }
-            int previous_quantity = Integer.parseInt(jedis.hget(username, product));
-            jedis.hset(username, product, String.valueOf(previous_quantity + quant));
-
-            // logging help:
-            // logger.info("Data stored in Redis for username '{}':", username);
-            // Map<String, String> data = jedis.hgetAll(username);
-            // data.forEach((key, value) -> logger.info("{} - {}", key, value));
-
-            // logger.info("Data stored in the app for username '{}':", username);
-            // for (UserProductQuantity prod_info : user_requests) {
-            //     logger.info("Product name: {} | Quantity: {}", prod_info.getProductName(), prod_info.getQuantity());
-            // }
+            logger.info("Added {} units of {} for user '{}'.", quantity, product, username);
         }
 
         jedis.close();
         sc.close();
     }
-}
 
+    // Function to calculate the current quantity within the time window
+    private static long calculateCurrentQuantity(Jedis jedis, String key, int timeslot) {
+        LocalDateTime now = LocalDateTime.now();
+        long totalQuantity = 0;
 
+        // Get the list of timestamps and quantities
+        int size = Math.toIntExact(jedis.llen(key));
+        for (int i = 0; i < size; i++) {
+            String[] requestInfo = jedis.lindex(key, i).split(":");
+            LocalDateTime requestTime = LocalDateTime.parse(requestInfo[0], DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            int requestQuantity = Integer.parseInt(requestInfo[1]);
 
-class UserProductQuantity {
-    private String productName;
-    private int quantity;
-    private LocalDateTime timestamp;
-
-    public UserProductQuantity(String product, int quant, LocalDateTime tsp) {
-        productName = product;
-        quantity = quant;
-        timestamp = tsp;
+            Duration duration = Duration.between(requestTime, now);
+            if (duration.getSeconds() <= timeslot) {
+                totalQuantity += requestQuantity;
+            } else {
+                // Remove old timestamps that are outside the timeslot window
+                jedis.ltrim(key, i + 1, -1);
+                break;
+            }
+        }
+        return totalQuantity;
     }
 
-    public String getProductName() {
-        return productName;
-    }
+    // Function to add a product request and store the timestamp and quantity
+    private static void addProductRequest(Jedis jedis, String username, String product, int quantity) {
+        // Add the product to the user's list of products with its quantity
+        jedis.hincrBy(username, product, quantity);
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void addQuantity(int quant) {
-        quantity += quant; 
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+        // Store the request timestamp and quantity in the list
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        jedis.rpush(username + ":timestamps", timestamp + ":" + quantity);
     }
 }

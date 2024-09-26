@@ -2,9 +2,7 @@ package ex5.lab1.cbd;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import redis.clients.jedis.Jedis; 
 import org.apache.logging.log4j.Logger;
@@ -12,13 +10,12 @@ import org.apache.logging.log4j.LogManager;
 
 public class ServiceSystem {
     private static final Logger logger = LogManager.getLogger(ServiceSystem.class);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME; // convert to string for redis
 
     public static void main(String[] args) {
 
         Jedis jedis = new Jedis();
-        jedis.flushAll();
-
-        Map<String, ArrayList<UserProduct>> users = new HashMap<>();
+        jedis.flushAll();  // clear the database to avoid key errors
 
         Scanner sc = new Scanner(System.in);
         
@@ -30,61 +27,41 @@ public class ServiceSystem {
         
         while (true) {
             logger.info("Press ENTER to exit.");
-    
             logger.info("username: ");
             username = sc.nextLine();
 
             if (username.equals(""))
                 break;
 
-            if (users.containsKey(username)) {
-                ArrayList<UserProduct> user_requests = users.get(username);
-                if (user_requests.size() == limit) {
-                    UserProduct obj = user_requests.get(0);
-                    LocalDateTime request_timestamp = obj.getTimestamp();
-                    LocalDateTime now = LocalDateTime.now();
+            // check if the user has reached the limit of stored resquests per 30 seconds
+            if (jedis.scard(username) >= limit) {
+                String oldestProduct = jedis.lindex(username + ":timestamps", 0);
+                LocalDateTime oldestRequestTime = LocalDateTime.parse(oldestProduct, formatter);
+                LocalDateTime now = LocalDateTime.now();
 
-                    Duration duration = Duration.between(request_timestamp, now);
-                    long seconds_passed = duration.getSeconds();
+                Duration duration = Duration.between(oldestRequestTime, now);
+                long secondsPassed = duration.getSeconds();
 
-                    if (seconds_passed > timeslot) { 
-                        user_requests.remove(0);
-                    } else {
-                        logger.warn("Username '{}' already reached the requests limit ({}/{}) seconds.", username, limit, timeslot);
-                        continue;
-                    }
+                if (secondsPassed > timeslot) {
+                    // remove the oldest product and timestamp if the secondsPassed already surprassed the timeslot
+                    jedis.spop(username);
+                    jedis.lpop(username + ":timestamps");
+                } else {
+                    logger.warn("Username '{}' already reached the requests limit ({}/{} seconds).", username, limit, timeslot);
+                    continue;
                 }
-            } else {
-                users.put(username, new ArrayList<UserProduct>());
             }
 
             logger.info("product: ");
             product = sc.nextLine();
-            jedis.sadd(username, product);
 
-            users.get(username).add(new UserProduct(product, LocalDateTime.now()));
+            // add the new pair (user, product) to Redis and set the current timestamp
+            jedis.sadd(username, product);
+            jedis.rpush(username + ":timestamps", LocalDateTime.now().format(formatter));
 
         }
 
         jedis.close();
         sc.close();
-    }
-}
-
-class UserProduct {
-    private String productName;
-    private LocalDateTime timestamp;
-
-    public UserProduct(String product, LocalDateTime tsp) {
-        productName = product;
-        timestamp = tsp;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
     }
 }

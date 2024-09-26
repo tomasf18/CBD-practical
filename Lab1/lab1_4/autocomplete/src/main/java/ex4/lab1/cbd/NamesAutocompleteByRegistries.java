@@ -1,73 +1,82 @@
 package ex4.lab1.cbd;
 
-import redis.clients.jedis.Jedis; 
-import java.io.File;
-import java.util.HashMap;
+import redis.clients.jedis.Jedis;
+
+import java.util.List;
 import java.util.Scanner;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Set;
 
 public class NamesAutocompleteByRegistries {
-    public static void main( String[] args ) {
+    public static void main(String[] args) {
         Jedis jedis = new Jedis();
-        Set<String> results;
-        
+        jedis.flushAll(); // clear db to avoid confilts
+
         // get file stream so I can read the file
-        try (InputStream inputStream = NamesAutocomplete.class.getResourceAsStream("/nomes-pt-2021.csv");
-                Scanner fileScanner = new Scanner(inputStream)) {
+        try (InputStream inputStream = NamesAutocompleteByRegistries.class.getResourceAsStream("/nomes-pt-2021.csv");
+             Scanner fileScanner = new Scanner(inputStream)) {
 
             String line;
             String[] parts;
             String name;
-            String n_registries;
+            int n_registries;
 
             while (fileScanner.hasNextLine()) {
                 line = fileScanner.nextLine();
                 parts = line.split(";");
                 name = parts[0];
-                n_registries = parts[1];
-                jedis.set(name, n_registries);
+                n_registries = Integer.parseInt(parts[1]);
+
+                // Store in two different sets (to not cause set confusion)
+
+                // Store by score
+                jedis.zadd("names_popularity", n_registries, name);
+
+                // Store by lex (with score=0)
+                jedis.zadd("names_lex", 0, name);
             }
 
         } catch (IOException e) {
             System.out.println("File error - 'nomes-pt-2021.csv': " + e.getMessage());
-            return; 
+            jedis.close();
+            return;
         }
 
-
         Scanner sc = new Scanner(System.in);
-        System.out.print( "Search for (Enter for quit): " );
+        System.out.print("Search for (Enter for quit): ");
         String input = sc.nextLine();
 
-        /* 
-            Slides: "CBD_05_KeyValue" 
-            Slide 30: "KEYS pattern" - "finds all the keys matching a pattern"    
-        */
-
-        
         while (!input.isEmpty()) {
-            String pattern = input + "*";
-
             System.out.println("Results:");
-            results = jedis.keys(pattern);
 
-            results.stream().sorted(
-                (name1, name2) -> {
-                    int n_reg_1 = Integer.parseInt(jedis.get(name1));
-                    int n_reg_2 = Integer.parseInt(jedis.get(name2));
-                    return n_reg_2 - n_reg_1;
-                }).forEach(name -> {
-                    System.out.println(name + " - " + jedis.get(name));
-                });
+            // clear previous set keys to avoid conflicts
+            jedis.del("filterKey");
+            jedis.del("intersectionKey");
 
-            // the lambda expression is using a comparator that compares the values of the keys in the redis database
-            // and prints the names and the associated number of registries in descending order
+            // filter by name prefix (input) and store in a third set "filter_key"
+            List<String> matchingNames = jedis.zrangeByLex("names_lex", "[" + input, "[" + input + "\uFFFF");
+
+            for (String name : matchingNames) {
+                jedis.zadd("filterKey", 0, name); 
+            }
+
+            // then, intersect the filtered results with the names_popularity, so i can get the names sorted by the "names_popularity" order (by scorses)
+            jedis.zinterstore("intersectionKey", new String[]{"filterKey", "names_popularity"});
+
+            // retrieve the sorted results by score in descending order
+            List<String> results = jedis.zrevrange("intersectionKey", 0, -1);
+
+            // print the results
+            results.forEach(name -> {
+                double score = jedis.zscore("names_popularity", name);
+                System.out.printf("%s - %d\n", name, (int) score);
+            });
 
             System.out.print("\n\nSearch for (Enter for quit): ");
             input = sc.nextLine();
         }
 
+        sc.close();
+        jedis.close();
     }
 }
