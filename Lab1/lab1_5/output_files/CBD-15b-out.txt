@@ -1,0 +1,91 @@
+2024-09-27 10:32:00 INFO  ServiceSystemB:29 - Press ENTER to exit.
+2024-09-27 10:32:00 INFO  ServiceSystemB:30 - username: 
+tomás
+2024-09-27 10:32:03 INFO  ServiceSystemB:36 - product: 
+água
+2024-09-27 10:32:04 INFO  ServiceSystemB:38 - quantity: 
+23
+2024-09-27 10:32:05 INFO  ServiceSystemB:55 - Added 23 units of product 'água' for user 'tomás'.
+2024-09-27 10:32:05 INFO  ServiceSystemB:29 - Press ENTER to exit.
+2024-09-27 10:32:05 INFO  ServiceSystemB:30 - username: 
+tomás
+2024-09-27 10:32:08 INFO  ServiceSystemB:36 - product: 
+sumo 
+2024-09-27 10:32:14 INFO  ServiceSystemB:38 - quantity: 
+5
+2024-09-27 10:32:15 INFO  ServiceSystemB:55 - Added 5 units of product 'sumo' for user 'tomás'.
+2024-09-27 10:32:15 INFO  ServiceSystemB:29 - Press ENTER to exit.
+2024-09-27 10:32:15 INFO  ServiceSystemB:30 - username: 
+tomás
+2024-09-27 10:32:18 INFO  ServiceSystemB:36 - product: 
+livro
+2024-09-27 10:32:20 INFO  ServiceSystemB:38 - quantity: 
+3
+2024-09-27 10:32:21 WARN  ServiceSystemB:48 - ERROR: That product quantity surprasses the product quantity limit (30 units / 30 seconds) for username 'tomás'.
+2024-09-27 10:32:21 INFO  ServiceSystemB:29 - Press ENTER to exit.
+2024-09-27 10:32:21 INFO  ServiceSystemB:30 - username: 
+tomás
+2024-09-27 10:32:24 INFO  ServiceSystemB:36 - product: 
+livro
+2024-09-27 10:32:26 INFO  ServiceSystemB:38 - quantity: 
+2
+2024-09-27 10:32:27 INFO  ServiceSystemB:55 - Added 2 units of product 'livro' for user 'tomás'.
+2024-09-27 10:32:27 INFO  ServiceSystemB:29 - Press ENTER to exit.
+2024-09-27 10:32:27 INFO  ServiceSystemB:30 - username: 
+tomás
+2024-09-27 10:32:30 INFO  ServiceSystemB:36 - product: 
+livro 
+2024-09-27 10:32:35 INFO  ServiceSystemB:38 - quantity: 
+4
+2024-09-27 10:32:36 WARN  ServiceSystemB:48 - ERROR: That product quantity surprasses the product quantity limit (30 units / 30 seconds) for username 'tomás'.
+2024-09-27 10:32:36 INFO  ServiceSystemB:29 - Press ENTER to exit.
+2024-09-27 10:32:36 INFO  ServiceSystemB:30 - username: 
+tomás
+2024-09-27 10:32:39 INFO  ServiceSystemB:36 - product: 
+livro
+2024-09-27 10:32:47 INFO  ServiceSystemB:38 - quantity: 
+4
+2024-09-27 10:32:47 INFO  ServiceSystemB:55 - Added 4 units of product 'livro' for user 'tomás'.
+2024-09-27 10:32:47 INFO  ServiceSystemB:29 - Press ENTER to exit.
+2024-09-27 10:32:47 INFO  ServiceSystemB:30 - username: 
+tomás
+2024-09-27 10:32:50 INFO  ServiceSystemB:36 - product: 
+garfo
+2024-09-27 10:32:57 INFO  ServiceSystemB:38 - quantity: 
+2
+2024-09-27 10:32:58 INFO  ServiceSystemB:55 - Added 2 units of product 'garfo' for user 'tomás'.
+2024-09-27 10:32:58 INFO  ServiceSystemB:29 - Press ENTER to exit.
+2024-09-27 10:32:58 INFO  ServiceSystemB:30 - username: 
+andré
+2024-09-27 10:33:01 INFO  ServiceSystemB:36 - product: 
+chuteiras
+2024-09-27 10:33:04 INFO  ServiceSystemB:38 - quantity: 
+29
+2024-09-27 10:33:06 INFO  ServiceSystemB:55 - Added 29 units of product 'chuteiras' for user 'andré'.
+2024-09-27 10:33:06 INFO  ServiceSystemB:29 - Press ENTER to exit.
+2024-09-27 10:33:06 INFO  ServiceSystemB:30 - username: 
+andré
+2024-09-27 10:33:08 INFO  ServiceSystemB:36 - product: 
+fones
+2024-09-27 10:33:10 INFO  ServiceSystemB:38 - quantity: 
+2
+2024-09-27 10:33:13 WARN  ServiceSystemB:48 - ERROR: That product quantity surprasses the product quantity limit (30 units / 30 seconds) for username 'andré'.
+2024-09-27 10:33:13 INFO  ServiceSystemB:29 - Press ENTER to exit.
+2024-09-27 10:33:13 INFO  ServiceSystemB:30 - username: 
+andré
+2024-09-27 10:33:16 INFO  ServiceSystemB:36 - product: 
+fones
+2024-09-27 10:33:19 INFO  ServiceSystemB:38 - quantity: 
+1
+2024-09-27 10:33:19 INFO  ServiceSystemB:55 - Added 1 units of product 'fones' for user 'andré'.
+2024-09-27 10:33:19 INFO  ServiceSystemB:29 - Press ENTER to exit.
+2024-09-27 10:33:19 INFO  ServiceSystemB:30 - username: 
+andré
+2024-09-27 10:33:25 INFO  ServiceSystemB:36 - product: 
+casaco
+2024-09-27 10:33:26 INFO  ServiceSystemB:38 - quantity: 
+1
+2024-09-27 10:33:27 WARN  ServiceSystemB:48 - ERROR: That product quantity surprasses the product quantity limit (30 units / 30 seconds) for username 'andré'.
+2024-09-27 10:33:27 INFO  ServiceSystemB:29 - Press ENTER to exit.
+2024-09-27 10:33:27 INFO  ServiceSystemB:30 - username: 
+     

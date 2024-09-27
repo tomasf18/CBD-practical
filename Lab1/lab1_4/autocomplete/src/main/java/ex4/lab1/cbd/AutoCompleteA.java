@@ -5,12 +5,12 @@ import java.util.Scanner;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class NamesAutocomplete {
+public class AutoCompleteA {
     public static void main( String[] args ) {
         Jedis jedis = new Jedis();
         
         // get file stream so I can read the file
-        try (InputStream inputStream = NamesAutocomplete.class.getResourceAsStream("/names.txt");
+        try (InputStream inputStream = AutoCompleteA.class.getResourceAsStream("/names.txt");
                 Scanner fileScanner = new Scanner(inputStream)) {
 
             while (fileScanner.hasNextLine()) {

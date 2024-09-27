@@ -7,13 +7,13 @@ import java.util.Scanner;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class NamesAutocompleteByRegistries {
+public class AutoCompleteB {
     public static void main(String[] args) {
         Jedis jedis = new Jedis();
         jedis.flushAll(); // clear db to avoid confilts
 
         // get file stream so I can read the file
-        try (InputStream inputStream = NamesAutocompleteByRegistries.class.getResourceAsStream("/nomes-pt-2021.csv");
+        try (InputStream inputStream = AutoCompleteB.class.getResourceAsStream("/nomes-pt-2021.csv");
              Scanner fileScanner = new Scanner(inputStream)) {
 
             String line;
@@ -27,12 +27,12 @@ public class NamesAutocompleteByRegistries {
                 name = parts[0];
                 n_registries = Integer.parseInt(parts[1]);
 
-                // Store in two different sets (to not cause set confusion)
+                // store in two different sets (not to cause set confusion)
 
-                // Store by score
+                // store by score
                 jedis.zadd("names_popularity", n_registries, name);
 
-                // Store by lex (with score=0)
+                // store by lex (with score=0)
                 jedis.zadd("names_lex", 0, name);
             }
 

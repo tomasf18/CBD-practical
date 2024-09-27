@@ -1,18 +1,18 @@
 SET name
 SET name 'Tomás'
-Get name
-set idade 20
-get idade
+GET name
+SET idade 20
+GET idade
 exit
-set 1 [1, 2, 3, 4]
-set 1 '{1, 2, 3}'
-get 1
-append 1 a
-get 1
-incr 1
-exists 1
-exists 1abs
-expire 1 1
-get 1
-ttl a
+SET 1 [1, 2, 3, 4]
+SET 1 '{1, 2, 3}'
+GET 1
+APPEND 1 a
+GET 1
+INCR 1
+EXISTS 1
+EXISTS 1abs
+EXPIRE 1 1
+GET 1
+TTL a
 exit

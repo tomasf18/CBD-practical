@@ -8,8 +8,8 @@ import redis.clients.jedis.Jedis;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-public class ServiceSystem {
-    private static final Logger logger = LogManager.getLogger(ServiceSystem.class);
+public class ServiceSystemA {
+    private static final Logger logger = LogManager.getLogger(ServiceSystemA.class);
     private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME; // convert to string for redis
 
     public static void main(String[] args) {

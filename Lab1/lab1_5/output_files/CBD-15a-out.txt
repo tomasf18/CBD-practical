@@ -1,0 +1,50 @@
+2024-09-27 10:25:58 INFO  ServiceSystemA:29 - Press ENTER to exit.
+2024-09-27 10:25:58 INFO  ServiceSystemA:30 - username: 
+tomás
+2024-09-27 10:26:00 INFO  ServiceSystemA:55 - product: 
+água
+2024-09-27 10:26:02 INFO  ServiceSystemA:29 - Press ENTER to exit.
+2024-09-27 10:26:02 INFO  ServiceSystemA:30 - username: 
+tomás
+2024-09-27 10:26:04 INFO  ServiceSystemA:55 - product: 
+fones
+2024-09-27 10:26:08 INFO  ServiceSystemA:29 - Press ENTER to exit.
+2024-09-27 10:26:08 INFO  ServiceSystemA:30 - username: 
+tomás
+2024-09-27 10:26:11 INFO  ServiceSystemA:55 - product: 
+pc
+2024-09-27 10:26:13 INFO  ServiceSystemA:29 - Press ENTER to exit.
+2024-09-27 10:26:13 INFO  ServiceSystemA:30 - username: 
+tomás
+2024-09-27 10:26:15 INFO  ServiceSystemA:55 - product: 
+rato
+2024-09-27 10:26:18 INFO  ServiceSystemA:29 - Press ENTER to exit.
+2024-09-27 10:26:18 INFO  ServiceSystemA:30 - username: 
+tomás
+2024-09-27 10:26:20 INFO  ServiceSystemA:55 - product: 
+telemóvel
+2024-09-27 10:26:23 INFO  ServiceSystemA:29 - Press ENTER to exit.
+2024-09-27 10:26:23 INFO  ServiceSystemA:30 - username: 
+tomás
+2024-09-27 10:26:25 WARN  ServiceSystemA:50 - Username 'tomás' already reached the requests limit (5/30 seconds).
+2024-09-27 10:26:25 INFO  ServiceSystemA:29 - Press ENTER to exit.
+2024-09-27 10:26:25 INFO  ServiceSystemA:30 - username: 
+tomás
+2024-09-27 10:26:28 WARN  ServiceSystemA:50 - Username 'tomás' already reached the requests limit (5/30 seconds).
+2024-09-27 10:26:28 INFO  ServiceSystemA:29 - Press ENTER to exit.
+2024-09-27 10:26:28 INFO  ServiceSystemA:30 - username: 
+tomás
+2024-09-27 10:26:32 WARN  ServiceSystemA:50 - Username 'tomás' already reached the requests limit (5/30 seconds).
+2024-09-27 10:26:32 INFO  ServiceSystemA:29 - Press ENTER to exit.
+2024-09-27 10:26:32 INFO  ServiceSystemA:30 - username: 
+tomás
+2024-09-27 10:26:44 INFO  ServiceSystemA:55 - product: 
+caneta
+2024-09-27 10:26:46 INFO  ServiceSystemA:29 - Press ENTER to exit.
+2024-09-27 10:26:46 INFO  ServiceSystemA:30 - username: 
+tomás
+2024-09-27 10:26:50 INFO  ServiceSystemA:55 - product: 
+relógio
+2024-09-27 10:26:55 INFO  ServiceSystemA:29 - Press ENTER to exit.
+2024-09-27 10:26:55 INFO  ServiceSystemA:30 - username: 
+

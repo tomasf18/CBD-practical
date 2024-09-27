@@ -10,8 +10,8 @@ import redis.clients.jedis.Jedis;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-public class ServiceSystemQuantity {
-    private static final Logger logger = LogManager.getLogger(ServiceSystemQuantity.class);
+public class ServiceSystemB {
+    private static final Logger logger = LogManager.getLogger(ServiceSystemB.class);
 
     public static void main(String[] args) {
         Jedis jedis = new Jedis();
@@ -43,16 +43,16 @@ public class ServiceSystemQuantity {
             // check the total quantity of products requested in the last 'timeslot' seconds
             long totalQuantity = calculateCurrentQuantity(jedis, key, timeslot);
 
-            // check if adding the new request exceeds the limit
+            // check if adding the quantity of the new request exceeds the limit
             if (totalQuantity + quantity > limit) {
-                logger.warn("ERROR: That quantity surprasses the product quantity limit ({} units / {} seconds) for username '{}'.",  limit, timeslot, username);
+                logger.warn("ERROR: That product quantity surprasses the product quantity limit ({} units / {} seconds) for username '{}'.",  limit, timeslot, username);
                 continue;
             }
 
             // store the new product request and its quantity in redis
             addProductRequest(jedis, username, product, quantity);
 
-            logger.info("Added {} units of {} for user '{}'.", quantity, product, username);
+            logger.info("Added {} units of product '{}' for user '{}'.", quantity, product, username);
         }
 
         jedis.close();
@@ -70,7 +70,7 @@ public class ServiceSystemQuantity {
             String entry = jedis.lindex(key, i); // e.g.: 2024-09-26T17:40:45.296858263:3
             int last_colon_index = entry.lastIndexOf(':');
 
-            // Separate timestamp and quantity (the form of the entry is -> timestamp:quantity)
+            // separate timestamp and quantity (the form of the entry is -> timestamp:quantity)
             String timestampPart = entry.substring(0, last_colon_index);
             String quantityPart = entry.substring(last_colon_index + 1);
 
