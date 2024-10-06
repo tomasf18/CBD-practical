@@ -29,7 +29,7 @@ docker compose up (-d)
 ```
 
 
-Open `mongosh` on the container:
+Open `mongosh` (mango shell) on the container:
 ```bash
 docker-compose exec -it mongodb mongosh --db cbd
 ```
