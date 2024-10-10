@@ -31,7 +31,7 @@ docker compose up (-d)
 
 Open `mongosh` (mango shell) on the container:
 ```bash
-docker-compose exec -it mongodb mongosh --db cbd
+docker compose exec -it mongodb mongosh --db cbd
 ```
 Corre o docker compose e abre um terminal a executar o serviço do docker compose file "mongodb"
 
