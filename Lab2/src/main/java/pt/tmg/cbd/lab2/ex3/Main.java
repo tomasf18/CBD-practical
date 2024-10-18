@@ -11,7 +11,7 @@ public class Main {
         MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
 
         MongoDatabase database = mongoClient.getDatabase("cbd");
-        MongoCollection<Document> collection = database.getCollection("restaurantes");
+        MongoCollection<Document> collection = database.getCollection("restaurants");
 
         // se houver database e coleçao retorna tudo certo
         System.out.println("Database: " + database.getName());
