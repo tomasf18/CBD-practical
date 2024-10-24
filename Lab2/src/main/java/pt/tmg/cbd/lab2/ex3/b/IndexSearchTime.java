@@ -44,7 +44,7 @@ public class IndexSearchTime {
         );
         System.out.println("\nRestaurante atualizado\n");
 
-        MongoCursor<Document> cursor = collection.find(Filters.eq("localidade", "Aveiro")).iterator();
+        MongoCursor<Document> cursor = collection.find(Filters.eq("gastronomia", "Chicken")).iterator();
         System.out.println("\nRestaurantes em Aveiro:");
 
         try {
@@ -56,7 +56,7 @@ public class IndexSearchTime {
             cursor.close();
         }
 
-        collection.deleteOne(Filters.eq("nome", "Restaurante2"));
+        collection.deleteOne(Filters.eq("localidade", "Aveiro"));
         System.out.println("\nRestaurante eliminado\n");
 
         long endTime = System.currentTimeMillis();
@@ -80,7 +80,7 @@ public class IndexSearchTime {
         );
         System.out.println("\nRestaurante atualizado com índices\n");
 
-        cursor = collection.find(Filters.eq("localidade", "Aveiro")).iterator();
+        cursor = collection.find(Filters.eq("gastronomia", "Chicken")).iterator();
         System.out.println("\nRestaurantes em Aveiro com índices:");
         try {
             while (cursor.hasNext()) {
@@ -91,7 +91,7 @@ public class IndexSearchTime {
             cursor.close();
         }
 
-        collection.deleteOne(Filters.eq("nome", "Restaurante2"));
+        collection.deleteOne(Filters.eq("localidade", "Aveiro"));
         System.out.println("\nRestaurante eliminado\n");
 
         endTime = System.currentTimeMillis();
