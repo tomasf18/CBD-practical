@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 public class IndexSearchTime {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
         MongoDatabase database = mongoClient.getDatabase("cbd");
         MongoCollection<Document> collection = database.getCollection("restaurants");
@@ -68,9 +68,10 @@ public class IndexSearchTime {
         System.out.println("\nRestaurante inserido\n");
 
         // indexes
-        collection.createIndex(new Document("localidade", 1)); // localidade
-        collection.createIndex(new Document("gastronomia", 1)); // gastronomia
-        collection.createIndex(new Document("nome", "text"));   // nome
+        collection.createIndex(new Document("localidade", 1)); 
+        collection.createIndex(new Document("gastronomia", 1)); 
+        collection.createIndex(new Document("nome", "text"));  
+        Thread.sleep(10000);
 
         startTime = System.currentTimeMillis();
 
@@ -96,6 +97,9 @@ public class IndexSearchTime {
 
         endTime = System.currentTimeMillis();
         System.out.println("Tempo de execução com índices: " + (endTime - startTime) + " ms");
+
+        // delete indexes
+
 
         mongoClient.close();
     }

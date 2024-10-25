@@ -1,5 +1,6 @@
 package pt.tmg.cbd.lab2.ex3.d;
 
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -19,22 +20,26 @@ public class RestaurantsDAO {
     public static void main(String[] args) {
         // connect to mongo server
         MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
-        MongoDatabase database = mongoClient.getDatabase("cbd"); // Nome da base de dados
-        MongoCollection<Document> collection = database.getCollection("restaurants"); // Nome da coleção
+        MongoDatabase database = mongoClient.getDatabase("cbd"); 
+        MongoCollection<Document> collection = database.getCollection("restaurants"); 
 
         RestaurantsDAO dao = new RestaurantsDAO(collection);
 
         int totalLocalidades = dao.countLocalidades();
-        System.out.println("Total de localidades distintas: " + totalLocalidades);
+        System.out.println("Numero de localidades distintas: " + totalLocalidades);
+
+        System.out.println();
 
         Map<String, Integer> restByLocalidade = dao.countRestByLocalidade();
-        System.out.println("Número de restaurantes por localidade:");
+        System.out.println("Numero de restaurantes por localidade:");
         restByLocalidade.forEach((localidade, count) -> {
             System.out.println(localidade + ": " + count);
         });
 
+        System.out.println();
+
         List<String> similarRestaurants = dao.getRestWithNameCloserTo("Park");
-        System.out.println("Restaurantes cujo nome contém 'Park':");
+        System.out.println("Nome de restaurantes contendo 'Park' no nome: ");
         similarRestaurants.forEach(System.out::println);
 
         mongoClient.close();
@@ -46,9 +51,16 @@ public class RestaurantsDAO {
 
     // distinct localities
     public int countLocalidades() {
-        return (int) mongoCollection.distinct("localidade", String.class).into(new ArrayList<>()).size();
+        AggregateIterable<Document> locs = mongoCollection.aggregate(Arrays.asList(
+            Aggregates.group("$localidade"),  
+            Aggregates.count("total")        
+        ));
+    
+        Document result = locs.first();
+        
+        return result.getInteger("total");
     }
-
+    
     // num of rest per loc
     public Map<String, Integer> countRestByLocalidade() {
         List<Document> results = mongoCollection.aggregate(Arrays.asList(

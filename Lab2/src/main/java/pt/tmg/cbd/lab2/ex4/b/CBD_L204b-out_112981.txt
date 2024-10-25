@@ -1,0 +1,69 @@
+[2024-10-25T15:52:09.065359067] Press ENTER to exit.
+[2024-10-25T15:52:09.069671182] username: tomas
+[2024-10-25T15:52:10.661032454] product: a
+[2024-10-25T15:52:11.104976278] quantity: 12
+[2024-10-25T15:52:12.026876495] Press ENTER to exit.
+[2024-10-25T15:52:12.02698744] username: tomas
+[2024-10-25T15:52:13.190405117] product: b
+[2024-10-25T15:52:13.615898559] quantity: 12
+[2024-10-25T15:52:15.057013291] Press ENTER to exit.
+[2024-10-25T15:52:15.057109084] username: tomas
+[2024-10-25T15:52:16.389880398] product: c
+[2024-10-25T15:52:16.865057759] quantity: 12
+ERROR: That product quantity surprasses the product quantity limit (30 units / 30 seconds) for username 'tomas'.
+[2024-10-25T15:52:17.559401607] Press ENTER to exit.
+[2024-10-25T15:52:17.55987778] username: tomas
+[2024-10-25T15:52:18.744413698] product: c
+[2024-10-25T15:52:19.177872853] quantity: 4
+[2024-10-25T15:52:19.971376521] Press ENTER to exit.
+[2024-10-25T15:52:19.971576579] username: tomas
+[2024-10-25T15:52:21.072027555] product: d
+[2024-10-25T15:52:21.491056509] quantity: 3
+ERROR: That product quantity surprasses the product quantity limit (30 units / 30 seconds) for username 'tomas'.
+[2024-10-25T15:52:22.086186049] Press ENTER to exit.
+[2024-10-25T15:52:22.08660421] username: tomas
+[2024-10-25T15:52:23.76504739] product: d
+[2024-10-25T15:52:24.272066439] quantity: 2
+[2024-10-25T15:52:24.912492115] Press ENTER to exit.
+[2024-10-25T15:52:24.912990014] username: tomas
+[2024-10-25T15:52:26.602945719] product: e
+[2024-10-25T15:52:26.961058309] quantity: 1
+ERROR: That product quantity surprasses the product quantity limit (30 units / 30 seconds) for username 'tomas'.
+[2024-10-25T15:52:27.436419959] Press ENTER to exit.
+[2024-10-25T15:52:27.436838906] username: tomas
+[2024-10-25T15:52:29.095109417] product: e
+[2024-10-25T15:52:30.041980502] quantity: 5
+ERROR: That product quantity surprasses the product quantity limit (30 units / 30 seconds) for username 'tomas'.
+[2024-10-25T15:52:31.227376324] Press ENTER to exit.
+[2024-10-25T15:52:31.227826945] username: tomas
+[2024-10-25T15:52:33.830333436] product: e
+[2024-10-25T15:52:34.335986227] quantity: 3
+ERROR: That product quantity surprasses the product quantity limit (30 units / 30 seconds) for username 'tomas'.
+[2024-10-25T15:52:43.424328709] Press ENTER to exit.
+[2024-10-25T15:52:43.424686777] username: tomas
+[2024-10-25T15:52:45.102438875] product: e
+[2024-10-25T15:52:45.414349827] quantity: 6
+[2024-10-25T15:52:45.905693163] Press ENTER to exit.
+[2024-10-25T15:52:45.906233513] username: tomas
+[2024-10-25T15:52:51.338528562] product: f
+[2024-10-25T15:52:51.871051897] quantity: 2
+[2024-10-25T15:52:53.122865759] Press ENTER to exit.
+[2024-10-25T15:53:23.321664935] username: miguel
+[2024-10-25T15:53:29.878543471] product: a
+[2024-10-25T15:53:30.83323672] quantity: 29
+[2024-10-25T15:53:32.089151091] Press ENTER to exit.
+[2024-10-25T15:53:32.089581259] username: miguel
+[2024-10-25T15:53:36.411386563] product: a
+[2024-10-25T15:53:36.918434739] quantity: 2
+ERROR: That product quantity surprasses the product quantity limit (30 units / 30 seconds) for username 'miguel'.
+[2024-10-25T15:53:39.863100732] Press ENTER to exit.
+[2024-10-25T15:53:39.863341782] username: miguel
+[2024-10-25T15:53:44.612133682] product: g
+[2024-10-25T15:53:46.226555012] quantity: 1
+[2024-10-25T15:53:50.534951803] Press ENTER to exit.
+[2024-10-25T15:53:50.535284397] username: miguel
+[2024-10-25T15:53:52.610489465] product: d
+[2024-10-25T15:53:53.033443588] quantity: 1
+ERROR: That product quantity surprasses the product quantity limit (30 units / 30 seconds) for username 'miguel'.
+[2024-10-25T15:53:55.019366467] Press ENTER to exit.
+[2024-10-25T15:53:55.019458101] username: 

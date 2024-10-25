@@ -1,0 +1,1 @@
+## O ficheiro `.js` para este exercício encontra-se no path `resources/uniqueDigitPhones.js`
