@@ -1,4 +1,4 @@
-package pt.tmg.cbd.lab2.ex4.b;
+package pt.tmg.cbd.lab2.lab2_4.b;
 
 import com.mongodb.client.*;
 import com.mongodb.client.model.Aggregates;
@@ -71,7 +71,7 @@ public class ServiceSystemB {
                 }
 
 
-                // Add new product, timestamp, and quantity
+                // add new product, timestamp, and quantity
                 Document productDoc = new Document("timestamp", LocalDateTime.now().format(formatter))
                                         .append("quantity", quantity);
                 
@@ -81,7 +81,7 @@ public class ServiceSystemB {
                 );
 
             } else {
-                // If user does not exist, create a new document
+                // if user does not exist, create a new document
                 System.out.print("[" + LocalDateTime.now().format(formatter) + "] product: ");
                 product = sc.nextLine();
 

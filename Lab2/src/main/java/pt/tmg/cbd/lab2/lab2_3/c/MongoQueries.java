@@ -1,4 +1,4 @@
-package pt.tmg.cbd.lab2.ex3.c;
+package pt.tmg.cbd.lab2.lab2_3.c;
 
 import com.mongodb.client.*;
 import com.mongodb.client.model.Aggregates;
@@ -20,7 +20,7 @@ public class MongoQueries {
 
         // 1 -> 4: Indique o total de restaurantes localizados no Bronx.
         long totalBronx = collection.countDocuments(Filters.eq("localidade", "Bronx"));
-        System.out.println("Total de restaurantes no Bronx: " + totalBronx);
+        System.out.println("\nQuery 4 - Total de restaurantes no Bronx: " + totalBronx + "\n");
 
         // 2 -> 10: Liste o restaurant_id, o nome, a localidade e gastronomia dos restaurantes cujo nome começam por "Wil".
         System.out.println("Query 10 - Restaurantes cujo nome começa com 'Wil':");
@@ -77,6 +77,7 @@ public class MongoQueries {
         for (Document doc : portugueseRestaurants) {
             System.out.println(doc.toJson());
         }
+        System.out.println();
 
         mongoClient.close();
     }

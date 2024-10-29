@@ -13,7 +13,7 @@ findUniqueDigitPhones = function() {
                     $eq: [
                         {$strLenCP: "$numberStr"}, // get the length of the number string
                         {$size: {$setUnion: {$map: {
-                                                input: {$range: [0, {$strLenCP: "$numberStr"}]}, // create an array of indexes
+                                                input: {$range: [0, {$strLenCP: "$numberStr"}]}, // create an array of indexes [0, 1, 2, ..., strLenCP]
                                                 as: "index",  // iterate over the indexes
                                                 in: {$substrCP: ["$numberStr", "$$index", 1]} // get the digit at the index
                                             }}

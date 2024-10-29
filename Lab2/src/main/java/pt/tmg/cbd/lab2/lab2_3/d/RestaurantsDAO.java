@@ -1,4 +1,4 @@
-package pt.tmg.cbd.lab2.ex3.d;
+package pt.tmg.cbd.lab2.lab2_3.d;
 
 import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;

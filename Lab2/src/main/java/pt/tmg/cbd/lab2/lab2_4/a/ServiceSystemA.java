@@ -1,4 +1,4 @@
-package pt.tmg.cbd.lab2.ex4.a;
+package pt.tmg.cbd.lab2.lab2_4.a;
 
 import com.mongodb.client.*;
 import com.mongodb.client.model.Aggregates;

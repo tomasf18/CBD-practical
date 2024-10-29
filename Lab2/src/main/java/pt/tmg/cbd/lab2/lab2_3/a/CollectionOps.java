@@ -1,4 +1,4 @@
-package pt.tmg.cbd.lab2.ex3.a;
+package pt.tmg.cbd.lab2.lab2_3.a;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;

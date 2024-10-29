@@ -1,4 +1,4 @@
-package pt.tmg.cbd.lab2.ex4.c;
+package pt.tmg.cbd.lab2.lab2_4.c;
 
 import redis.clients.jedis.Jedis;
 

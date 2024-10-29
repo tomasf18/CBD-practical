@@ -28,7 +28,6 @@ Import restaurants:
 docker compose up (-d)
 ```
 
-
 Open `mongosh` (mango shell) on the container:
 ```bash
 docker compose exec -it mongodb mongosh --db cbd
@@ -39,5 +38,5 @@ Import restaurants:
 ```bash
 docker-compose exec -it mongodb mongoimport --db cbd --collection restaurants --drop --file /resources/restaurants.json`
 ```
-Cooree a ferramentea de importação do mongo e vai correr o json para a database
+Corre a ferramenta de importação do mongo e vai correr o json para a database.
 Vai ser tudo montado na pasta `./resources:/resources` -> mapeamento da pasta resources do host para o container
