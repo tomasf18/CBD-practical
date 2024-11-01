@@ -1,0 +1,5 @@
+$gt, $lt, $gte, $lte, $ne, $elemMatch, $and, $or, $regex, $in, $group, $sum, $size, $project, $sort, $limit, $unwind, $dayOfWeek, $match
+
+grades.1.grade -> aceder à segunda possição (index 1) de um elemento grades que é um array, e aceder ao campo grade
+
+funções: .find(), .count(), .sort(), .limit()
