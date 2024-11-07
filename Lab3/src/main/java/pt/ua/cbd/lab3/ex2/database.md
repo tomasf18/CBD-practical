@@ -4,11 +4,10 @@
 
 ```sql
 CREATE TABLE utilizadores (
-    username TEXT,
-    nome TEXT,
-    email TEXT,
-    data_registo TIMESTAMP,
-    id UUID,
+    username        TEXT, -- Não é boa politica ter um id com comprimento variável (opção: limitar length)
+    nome            TEXT,
+    email           TEXT,
+    data_registo    TIMESTAMP,
     PRIMARY KEY (username)
 );
 ```
@@ -17,47 +16,43 @@ CREATE TABLE utilizadores (
 
 ```sql
 CREATE TABLE videos (
-    autor TEXT,
-    nome TEXT,
-    data_upload TIMESTAMP,
-    descricao TEXT,
-    tags SET<TEXT>,
-    video_id UUID,
-    PRIMARY KEY (autor)
-) WITH CLUSTERING ORDER BY (data_upload DESC);
+    video_id            INT, 
+    autor_username      TEXT, -- cluster key, opcional na query
+    data_upload         TIMESTAMP,
+    nome                TEXT,
+    descricao           TEXT,
+    tags                SET<TEXT>,
+    PRIMARY KEY ((video_id), autor_username)
+);
 ```
 
 #### Comentários
 
 ```sql
 CREATE TABLE comentarios_por_video (
-    nome_vid TEXT,
-    autor_vid TEXT,
-    data_comentario TIMESTAMP,
-    autor TEXT,
-    comentario TEXT,
-    PRIMARY KEY ((nome_vid), autor_vid)
-) WITH CLUSTERING ORDER BY (data_comentario DESC);
+    video_id            INT, -- unique id of a video
+    autor_username      TEXT,
+    data_comentario     TIMESTAMP,
+    comentario          TEXT,
+    PRIMARY KEY ((video_id), autor_username, data_comentario) -- O mesmo user consegue fazer vários comentários ao mesmo vídeo, com a restrição de ter de ser em instantes diferentes
+) WITH CLUSTERING ORDER BY (autor_username ASC, data_comentario DESC);
 
 CREATE TABLE comentarios_por_utilizador (
-    autor TEXT,
-    data_comentario TIMESTAMP,
-    nome_vid TEXT,
-    autor_vid TEXT,
-    comentario TEXT,
-    PRIMARY KEY (autor)
-) WITH CLUSTERING ORDER BY (data_comentario DESC);
+    autor_username      TEXT,
+    data_comentario     TIMESTAMP,
+    video_id            INT, 
+    comentario          TEXT,
+    PRIMARY KEY ((autor_username), video_id, data_comentario) -- Permite ao mesmo user ter múltiplos comentários num mesmo video, em instantes diferentes
+) WITH CLUSTERING ORDER BY (video_id ASC, data_comentario DESC);
 ```
 
 #### Seguidores
 
 ```sql
 CREATE TABLE seguidores_video (
-    nome_vid TEXT,
-    autor_vid TEXT,
-    username TEXT,
-    data_seguidor TIMESTAMP,
-    PRIMARY KEY ((nome_vid, autor_vid), username)
+    video_id            INT, 
+    username            TEXT,
+    PRIMARY KEY ((video_id), username)
 );
 ```
 
@@ -65,25 +60,29 @@ CREATE TABLE seguidores_video (
 
 ```sql
 CREATE TABLE eventos_video (
-    nome_vid TEXT,
-    autor_vid TEXT,
-    username TEXT,
-    tipo_evento TEXT,
-    data_evento TIMESTAMP,
-    tempo_video INT,
-    PRIMARY KEY ((nome_vid, autor_vid, username), data_evento)
-) WITH CLUSTERING ORDER BY (data_evento DESC);
+    video_id            INT, 
+    username            TEXT,
+    tipo_evento         TEXT,
+    data_evento         TIMESTAMP,
+    tempo_video         INT,
+    PRIMARY KEY ((video_id, username), data_evento, tempo_video)
+) WITH CLUSTERING ORDER BY (data_evento DESC, tempo_video DESC);
 ```
 
 #### Rating de Vídeos
 
 ```sql
 CREATE TABLE ratings_video (
-    nome_vid TEXT,
-    autor_vid TEXT,
-    soma_ratings COUNTER,
-    total_votos COUNTER,
-    PRIMARY KEY ((nome_vid, autor_vid))
+    video_id            INT,
+    autor_rating        TEXT,
+    data_rating         TIMESTAMP,
+    rating              INT,
+    PRIMARY KEY ((video_id), autor_rating, data_rating) 
+    -- Composição da PK:
+        -- video_id: para permitir ter ratings em diversos videos
+        -- autor_rating: para permitir diversos users criarem um rating num video
+        -- data_rating: para permitir um mesmo user criar diversos ratings a um mesmo video
+    -- Se tivesse só PK=(video_id), apenas conseguiria ter um rating por video
 );
 ```
 
@@ -91,28 +90,26 @@ CREATE TABLE ratings_video (
 
 ```sql
 SELECT * FROM videos 
-WHERE autor = 'autor';
+WHERE autor_username = 'user2';
 ```
 
 #### 8
 
 ```sql
 SELECT * FROM comentarios_por_utilizador 
-WHERE autor = 'username';
+WHERE autor_username = 'user6';
 ```
 
 #### 9
 
 ```sql
 SELECT * FROM comentarios_por_video 
-WHERE nome_vid = 'nome_vid'
-AND autor_vid = 'autor_vid';
+WHERE video_id = 8;
 ```
 
 #### 10
 
 ```sql
-SELECT total_votos, soma_ratings FROM ratings_video 
-WHERE nome_vid = 'nome_vid'
-AND autor_vid = 'autor_vid';
+SELECT AVG(rating), COUNT(rating) FROM ratings_video
+WHERE video_id = 5;
 ```

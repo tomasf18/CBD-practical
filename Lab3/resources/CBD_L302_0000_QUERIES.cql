@@ -1,20 +1,49 @@
 // 7. Permitir a pesquisa de todos os videos de determinado autor;
 
+SELECT * FROM videos 
+WHERE autor_username = 'user2';
+
 // 8. Permitir a pesquisa de comentarios por utilizador, ordenado inversamente pela data;
+
+SELECT * FROM comentarios_por_utilizador 
+WHERE autor_username = 'user6';
 
 // 9. Permitir a pesquisa de comentarios por videos, ordenado inversamente pela data;
 
+SELECT * FROM comentarios_por_video 
+WHERE video_id = 8;
+
 // 10. Permitir a pesquisa do rating medio de um video e quantas vezes foi votado;
 
+SELECT AVG(rating), COUNT(rating) FROM ratings_video
+WHERE video_id = 5;
 
+----
 
 // 1. Os ultimos 3 comentarios introduzidos para um video;
 
-// 2. Lista das tags de determinado video;UA.DETI.CBD- 2023/24 15
+SELECT comentario FROM comentarios_por_video  
+WHERE video_id = 4  
+ORDER BY data_comentario DESC 
+LIMIT 3;
+
+// 2. Lista das tags de determinado video;
+
+SELECT tags  
+FROM videos 
+WHERE video_id = 3;
 
 // 3. Todos os videos com a tag Aveiro;
 
+
+
 // 4.a. Os últimos 5 eventos de determinado vídeo realizados por um utilizador;
+
+SELECT tipo_evento, data_evento, tempo_video
+FROM eventos_video
+WHERE video_id = 1 AND username = 'user10'
+LIMIT 5;
+
 
 // 4.b. Todos os eventos de determinado utilizador;
 
