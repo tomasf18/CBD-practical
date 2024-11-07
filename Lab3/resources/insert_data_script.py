@@ -37,6 +37,26 @@ CREATE TABLE videos (
     PRIMARY KEY ((video_id), autor_username)
 );
 
+CREATE TABLE videos_por_data (
+    video_id            INT, 
+    autor_username      TEXT,
+    data_upload         TIMESTAMP,
+    nome                TEXT,
+    descricao           TEXT,
+    tags                SET<TEXT>,
+    PRIMARY KEY ((data_upload), video_id)
+) WITH CLUSTERING ORDER BY (data_upload DESC);
+
+CREATE TABLE videos_autor (
+    autor_username      TEXT, 
+    video_id            INT, 
+    data_upload         TIMESTAMP,
+    nome                TEXT,
+    descricao           TEXT,
+    tags                SET<TEXT>,
+    PRIMARY KEY ((autor_username), data_upload, video_id)
+);
+
 CREATE TABLE comentarios_por_video (
     video_id            INT,
     autor_username      TEXT,
@@ -60,13 +80,13 @@ CREATE TABLE seguidores_video (
 );
 
 CREATE TABLE eventos_video (
-    video_id            INT, 
     username            TEXT,
+    video_id            INT, 
     tipo_evento         TEXT,
     data_evento         TIMESTAMP,
     tempo_video         INT,
-    PRIMARY KEY ((video_id, username), data_evento, tempo_video)
-) WITH CLUSTERING ORDER BY (data_evento DESC, tempo_video DESC);
+    PRIMARY KEY ((username), video_id, data_evento, tempo_video)
+);
 
 CREATE TABLE ratings_video (
     video_id            INT,
@@ -115,6 +135,26 @@ with open("insert_data.cql", "w") as file:
         tags = random_tags()
         data_upload = random_timestamp().isoformat()
         file.write(f"INSERT INTO videos (autor_username, video_id, nome, descricao, tags, data_upload) VALUES ('{autor_username}', {video_id}, '{nome}', '{descricao}', {tags}, '{data_upload}');\n")
+
+    # Insert data into 'videos_por_data'
+    for i in range(1, num_videos + 1):
+        autor_username = random_username()
+        video_id = i
+        nome = f"Video {i}"
+        descricao = random_text()
+        tags = random_tags()
+        data_upload = random_timestamp().isoformat()
+        file.write(f"INSERT INTO videos_por_data (video_id, autor_username, data_upload, nome, descricao, tags) VALUES ({video_id}, '{autor_username}', '{data_upload}', '{nome}', '{descricao}', {tags});\n")
+
+    # Insert data into `videos_autor`
+    for i in range(1, num_videos + 1):
+        autor_username = random_username()
+        video_id = i
+        nome = f"Video {i}"
+        descricao = random_text()
+        tags = random_tags()
+        data_upload = random_timestamp().isoformat()
+        file.write(f"INSERT INTO videos_autor (autor_username, video_id, nome, descricao, tags, data_upload) VALUES ('{autor_username}', {video_id}, '{nome}', '{descricao}', {tags}, '{data_upload}');\n")
 
     for _ in range(num_comments):
         video_id = random.randint(1, num_videos)

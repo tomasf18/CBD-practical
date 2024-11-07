@@ -24,6 +24,26 @@ CREATE TABLE videos (
     tags                SET<TEXT>,
     PRIMARY KEY ((video_id), autor_username)
 );
+
+CREATE TABLE videos_por_data (
+    video_id            INT, 
+    autor_username      TEXT,
+    data_upload         TIMESTAMP,
+    nome                TEXT,
+    descricao           TEXT,
+    tags                SET<TEXT>,
+    PRIMARY KEY ((data_upload), video_id)
+) WITH CLUSTERING ORDER BY (data_upload DESC);
+
+CREATE TABLE videos_autor (
+    autor_username      TEXT, 
+    video_id            INT, 
+    data_upload         TIMESTAMP,
+    nome                TEXT,
+    descricao           TEXT,
+    tags                SET<TEXT>,
+    PRIMARY KEY ((autor_username), data_upload, video_id)
+);
 ```
 
 #### Comentários
@@ -60,13 +80,13 @@ CREATE TABLE seguidores_video (
 
 ```sql
 CREATE TABLE eventos_video (
-    video_id            INT, 
     username            TEXT,
+    video_id            INT, 
     tipo_evento         TEXT,
     data_evento         TIMESTAMP,
     tempo_video         INT,
-    PRIMARY KEY ((video_id, username), data_evento, tempo_video)
-) WITH CLUSTERING ORDER BY (data_evento DESC, tempo_video DESC);
+    PRIMARY KEY ((username), video_id, data_evento, tempo_video)
+);
 ```
 
 #### Rating de Vídeos

@@ -23,35 +23,82 @@ WHERE video_id = 5;
 // 1. Os ultimos 3 comentarios introduzidos para um video;
 
 SELECT comentario FROM comentarios_por_video  
-WHERE video_id = 4  
+WHERE video_id = 14  
 ORDER BY data_comentario DESC 
 LIMIT 3;
 
+ comentario
+-------------------------------
+       great interesting great
+          cool great beautiful
+ awesome interesting wonderful
+
+
 // 2. Lista das tags de determinado video;
 
-SELECT tags  
-FROM videos 
+SELECT tags FROM videos 
 WHERE video_id = 3;
+
+ tags
+------------------
+ {'tag2', 'tag3'}
+
 
 // 3. Todos os videos com a tag Aveiro;
 
-
+Necessário uma tabela auxiliar para filtrar por Aveiro?
 
 // 4.a. Os últimos 5 eventos de determinado vídeo realizados por um utilizador;
 
-SELECT tipo_evento, data_evento, tempo_video
-FROM eventos_video
-WHERE video_id = 1 AND username = 'user10'
+SELECT tipo_evento, data_evento, tempo_video FROM eventos_video
+WHERE username = 'user13'
+AND video_id = 21
+ORDER BY data_evento DESC
 LIMIT 5;
 
+ tipo_evento | data_evento                     | tempo_video
+-------------+---------------------------------+-------------
+       pause | 2024-10-06 17:37:15.778000+0000 |         378
+       pause | 2024-10-05 17:37:15.778000+0000 |          54
+        play | 2024-09-30 17:37:15.778000+0000 |         252
+        stop | 2024-09-18 17:37:15.778000+0000 |         367
+        play | 2024-08-15 17:37:15.778000+0000 |         207
 
 // 4.b. Todos os eventos de determinado utilizador;
 
+SELECT * FROM eventos_video
+WHERE username = 'user12';
+
+ username | video_id | data_evento                     | tempo_video | tipo_evento
+----------+----------+---------------------------------+-------------+-------------
+   user12 |        4 | 2024-10-05 17:37:15.778000+0000 |          82 |       pause
+   user12 |        9 | 2024-09-28 17:37:15.778000+0000 |          81 |       pause
+   user12 |       16 | 2024-10-21 17:37:15.778000+0000 |         293 |       pause
+   user12 |       19 | 2024-08-07 17:37:15.778000+0000 |         338 |        stop
+
+
+
 // 4.c. Todos os eventos de determinado utilizador to tipo "pause"
+
+Necessário criar uma tabela auxiliar para filtrar por tipo?
+
 
 // 5. Videos partilhados por determinado utilizador (maria1987, por exemplo) num determinado periodo de tempo (Agosto de 2017, por exemplo);
 
+SELECT * FROM videos_autor 
+WHERE autor_username = 'user11'
+AND data_upload >= '2024-09-01'
+AND data_upload < '2024-12-01';
+
+ autor_username | data_upload                     | video_id | descricao                 | nome     | tags
+----------------+---------------------------------+----------+---------------------------+----------+-------------------
+         user11 | 2024-09-26 18:05:44.550000+0000 |       16 | awesome beautiful amazing | Video 16 |          {'tag6'}
+         user11 | 2024-11-04 18:05:44.551000+0000 |       23 |  wonderful cool wonderful | Video 23 | {'tag11', 'tag9'}
+
+
 // 6. Os ultimos 10 videos, ordenado inversamente pela data da partilhada;
+
+PARA ORDENAR POR DATA, A DATA TEM DE ESTAR NA PARTITION KEY, MAS EU NAO CONSIGO ORDENAR PELA PARTITION KEY
 
 // 7. Todos os seguidores (followers) de determinado video;
 
