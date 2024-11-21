@@ -1,6 +1,6 @@
 // 7. Permitir a pesquisa de todos os videos de determinado autor;
 
-SELECT * FROM videos 
+SELECT * FROM videos_autor 
 WHERE autor_username = 'user2';
 
 // 8. Permitir a pesquisa de comentarios por utilizador, ordenado inversamente pela data;
@@ -27,6 +27,8 @@ WHERE video_id = 14
 ORDER BY data_comentario DESC 
 LIMIT 3;
 
+# Usar por ordem mesmo que esteja especificado na tabela para melhor legibilidade
+
  comentario
 -------------------------------
        great interesting great
@@ -46,7 +48,9 @@ WHERE video_id = 3;
 
 // 3. Todos os videos com a tag Aveiro;
 
-Necessário uma tabela auxiliar para filtrar por Aveiro?
+SELECT video_id, autor_username, data_upload 
+FROM videos_por_tag
+WHERE tag = 'tag1';
 
 // 4.a. Os últimos 5 eventos de determinado vídeo realizados por um utilizador;
 
@@ -80,7 +84,11 @@ WHERE username = 'user12';
 
 // 4.c. Todos os eventos de determinado utilizador to tipo "pause"
 
-Necessário criar uma tabela auxiliar para filtrar por tipo?
+CREATE INDEX ON eventos_video (tipo_evento);
+
+SELECT * FROM eventos_video
+WHERE username='user1'
+AND tipo_evento='pause';
 
 
 // 5. Videos partilhados por determinado utilizador (maria1987, por exemplo) num determinado periodo de tempo (Agosto de 2017, por exemplo);
@@ -98,17 +106,38 @@ AND data_upload < '2024-12-01';
 
 // 6. Os ultimos 10 videos, ordenado inversamente pela data da partilhada;
 
+// TODO: Explicar melhor (detalhar)
 PARA ORDENAR POR DATA, A DATA TEM DE ESTAR NA PARTITION KEY, MAS EU NAO CONSIGO ORDENAR PELA PARTITION KEY
+EXERCICIO A DAR ERRO, REMOVER TABELA E INSERCAO DE DADOS vidoes_por_data
+This query is not possible because we need to find the videos using the partition key and then sort by upload_timestamp. It is not possible to sort the data using the partition key, in this case, the upload_timestamp
 
 // 7. Todos os seguidores (followers) de determinado video;
 
+SELECT username FROM seguidores_video
+WHERE video_id = 1;
+
 // 8. Todos os comentarios (dos videos) que determinado utilizador esta a seguir (following);
+
+# TODO: Consertar inserts
+SELECT *
+FROM comentarios_videos_seguidos
+WHERE username_seguidor = 'user3';
+
 
 // 9. Os 5 videos com maior rating;
 
+# TODO: Explicar melhor
+This query is not possible because we need to find the videos using the partition key (rating) and then order by it. It is not possible to simply sort the data using the partition key. It is the same problem og the query 6.
+
 // 10. Uma query que retorne todos os videos e que mostre claramente a forma pela qual estao ordenados;
 
+SELECT * FROM videos
+# TODO EXPLICAR EM 2 FRASES COMO É QUE ELES APARECEM ORDENADOS
+
 // 11. Lista com as Tags existentes e o numero de videos catalogados com cada uma delas;
+
+SELECT tag, count(video_id) FROM videos_por_tag
+group by tag;
 
 // 12.
 

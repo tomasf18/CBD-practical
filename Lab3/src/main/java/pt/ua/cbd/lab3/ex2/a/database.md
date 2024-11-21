@@ -25,16 +25,6 @@ CREATE TABLE videos (
     PRIMARY KEY ((video_id), autor_username)
 );
 
-CREATE TABLE videos_por_data (
-    video_id            INT, 
-    autor_username      TEXT,
-    data_upload         TIMESTAMP,
-    nome                TEXT,
-    descricao           TEXT,
-    tags                SET<TEXT>,
-    PRIMARY KEY ((data_upload), video_id)
-) WITH CLUSTERING ORDER BY (data_upload DESC);
-
 CREATE TABLE videos_autor (
     autor_username      TEXT, 
     video_id            INT, 
@@ -44,6 +34,17 @@ CREATE TABLE videos_autor (
     tags                SET<TEXT>,
     PRIMARY KEY ((autor_username), data_upload, video_id)
 );
+
+CREATE TABLE videos_por_tag (
+    tag                 TEXT,
+    video_id            INT,
+    autor_username      TEXT,
+    nome                TEXT,
+    descricao           TEXT,
+    data_upload         TIMESTAMP,
+    PRIMARY KEY ((tag), video_id)
+);
+
 ```
 
 #### Comentários
@@ -64,6 +65,16 @@ CREATE TABLE comentarios_por_utilizador (
     comentario          TEXT,
     PRIMARY KEY ((autor_username), video_id, data_comentario) -- Permite ao mesmo user ter múltiplos comentários num mesmo video, em instantes diferentes
 ) WITH CLUSTERING ORDER BY (video_id ASC, data_comentario DESC);
+
+CREATE TABLE comentarios_videos_seguidos (
+    username_seguidor  TEXT,
+    video_id           INT,
+    autor_comentario   TEXT,
+    data_comentario    TIMESTAMP,
+    comentario         TEXT,
+    PRIMARY KEY ((username_seguidor), video_id, data_comentario)
+) WITH CLUSTERING ORDER BY (video_id ASC, data_comentario DESC);
+
 ```
 
 #### Seguidores

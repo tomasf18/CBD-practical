@@ -37,16 +37,6 @@ CREATE TABLE videos (
     PRIMARY KEY ((video_id), autor_username)
 );
 
-CREATE TABLE videos_por_data (
-    video_id            INT, 
-    autor_username      TEXT,
-    data_upload         TIMESTAMP,
-    nome                TEXT,
-    descricao           TEXT,
-    tags                SET<TEXT>,
-    PRIMARY KEY ((data_upload), video_id)
-) WITH CLUSTERING ORDER BY (data_upload DESC);
-
 CREATE TABLE videos_autor (
     autor_username      TEXT, 
     video_id            INT, 
@@ -55,6 +45,16 @@ CREATE TABLE videos_autor (
     descricao           TEXT,
     tags                SET<TEXT>,
     PRIMARY KEY ((autor_username), data_upload, video_id)
+);
+
+CREATE TABLE videos_por_tag (
+    tag                 TEXT,
+    video_id            INT,
+    autor_username      TEXT,
+    nome                TEXT,
+    descricao           TEXT,
+    data_upload         TIMESTAMP,
+    PRIMARY KEY ((tag), video_id)
 );
 
 CREATE TABLE comentarios_por_video (
@@ -71,6 +71,15 @@ CREATE TABLE comentarios_por_utilizador (
     video_id            INT,
     comentario          TEXT,
     PRIMARY KEY ((autor_username), video_id, data_comentario)
+) WITH CLUSTERING ORDER BY (video_id ASC, data_comentario DESC);
+
+CREATE TABLE comentarios_videos_seguidos (
+    username_seguidor  TEXT,
+    video_id           INT,
+    autor_comentario   TEXT,
+    data_comentario    TIMESTAMP,
+    comentario         TEXT,
+    PRIMARY KEY ((username_seguidor), video_id, data_comentario)
 ) WITH CLUSTERING ORDER BY (video_id ASC, data_comentario DESC);
 
 CREATE TABLE seguidores_video (
@@ -110,7 +119,9 @@ def random_text():
 
 def random_tags():
     tags = ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9", "tag10", "tag11", "tag12", "tag13", "tag14", "tag15"]
-    return "{'" + "', '".join(random.choice(tags) for _ in range(random.randint(1, int(len(tags) / 5)))) + "'}"
+    selected_tags = {random.choice(tags) for _ in range(random.randint(1, len(tags) // 5))}
+    cql_tags = "{'" + "', '".join(selected_tags) + "'}"
+    return cql_tags, selected_tags
 
 
 # Open the output file
@@ -132,19 +143,11 @@ with open("insert_data.cql", "w") as file:
         video_id = i
         nome = f"Video {i}"
         descricao = random_text()
-        tags = random_tags()
+        tags, tags_set = random_tags()
         data_upload = random_timestamp().isoformat()
         file.write(f"INSERT INTO videos (autor_username, video_id, nome, descricao, tags, data_upload) VALUES ('{autor_username}', {video_id}, '{nome}', '{descricao}', {tags}, '{data_upload}');\n")
-
-    # Insert data into 'videos_por_data'
-    for i in range(1, num_videos + 1):
-        autor_username = random_username()
-        video_id = i
-        nome = f"Video {i}"
-        descricao = random_text()
-        tags = random_tags()
-        data_upload = random_timestamp().isoformat()
-        file.write(f"INSERT INTO videos_por_data (video_id, autor_username, data_upload, nome, descricao, tags) VALUES ({video_id}, '{autor_username}', '{data_upload}', '{nome}', '{descricao}', {tags});\n")
+        for tag in set(tags_set):
+            file.write(f"INSERT INTO videos_por_tag (tag, video_id, autor_username, nome, descricao, data_upload) VALUES ('{tag}', {video_id}, '{autor_username}', '{nome}', '{descricao}', '{data_upload}');\n")
 
     # Insert data into `videos_autor`
     for i in range(1, num_videos + 1):
@@ -152,7 +155,7 @@ with open("insert_data.cql", "w") as file:
         video_id = i
         nome = f"Video {i}"
         descricao = random_text()
-        tags = random_tags()
+        tags, tags_set = random_tags()
         data_upload = random_timestamp().isoformat()
         file.write(f"INSERT INTO videos_autor (autor_username, video_id, nome, descricao, tags, data_upload) VALUES ('{autor_username}', {video_id}, '{nome}', '{descricao}', {tags}, '{data_upload}');\n")
 
@@ -162,20 +165,36 @@ with open("insert_data.cql", "w") as file:
         data_comentario = random_timestamp().isoformat()
         comentario = random_text()
         file.write(f"INSERT INTO comentarios_por_video (video_id, autor_username, data_comentario, comentario) VALUES ({video_id}, '{autor_username}', '{data_comentario}', '{comentario}');\n")
+        
+        
+    comentarios = []  # Armazena dados temporários de comentarios_por_utilizador
+    seguidores = []   # Armazena dados temporários de seguidores_video
 
-    # Insert data into `comentarios_por_utilizador`
+    # Inserir dados em `comentarios_por_utilizador`
     for _ in range(num_comments):
         autor_username = random_username()
         data_comentario = random_timestamp().isoformat()
         video_id = random.randint(1, num_videos)
         comentario = random_text()
+        comentarios.append((autor_username, data_comentario, video_id, comentario))
         file.write(f"INSERT INTO comentarios_por_utilizador (autor_username, data_comentario, video_id, comentario) VALUES ('{autor_username}', '{data_comentario}', {video_id}, '{comentario}');\n")
 
-    # Insert data into `seguidores_video`
+    # Inserir dados em `seguidores_video`
     for _ in range(num_followers):
         video_id = random.randint(1, num_videos)
         username = random_username()
+        seguidores.append((video_id, username))
         file.write(f"INSERT INTO seguidores_video (video_id, username) VALUES ({video_id}, '{username}');\n")
+
+    # Inserir dados em `comentarios_videos_seguidos`
+    for video_id, username in seguidores:
+        # Para cada seguidor de um vídeo, encontrar comentários no mesmo vídeo
+        for autor_username, data_comentario, video_com_id, comentario in comentarios:
+            if video_id == video_com_id:  # Se o vídeo corresponder
+                file.write(
+                    f"INSERT INTO comentarios_videos_seguidos (username_seguidor, video_id, autor_comentario, data_comentario, comentario) "
+                    f"VALUES ('{username}', {video_id}, '{autor_username}', '{data_comentario}', '{comentario}');\n"
+                )
 
     # Insert data into `eventos_video`
     for _ in range(num_events):
