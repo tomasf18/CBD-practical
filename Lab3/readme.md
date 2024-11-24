@@ -32,3 +32,11 @@ Clean: **Important** Execute the clean-up before
 
 * Make sure you have previously installed [Docker Desktop](https://docs.docker.com/desktop/), or at least Docker Engine.
 * [Official Docker Compose tutorial](https://docs.docker.com/compose/gettingstarted/)
+
+## Inserting data
+
+To insert data into the database, you can use the `cqlsh` command line tool.
+
+```bash
+cat insert_data.cql | docker compose exec -T cassandra cqlsh
+```

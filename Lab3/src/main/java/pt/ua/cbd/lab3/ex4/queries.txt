@@ -1,0 +1,83 @@
+// Using Secondary indexes
+SELECT name, team_name, position 
+FROM players 
+WHERE position = 'Midfielder';
+
+SELECT name, players, achievements
+FROM teams
+WHERE stadium = 'Lisbon Stadium';
+
+// Obter os 5 jogadores mais jovens de tuma equipa 
+SELECT name, age  FROM players_by_team  WHERE team_name = 'Team 2'  ORDER BY age ASC  LIMIT 5;
+
+// Obter todos os jogadores de uma dada equipa mais velhos do que uma dada idade
+SELECT name, age  FROM players_by_team  WHERE team_name = 'Team 2'  AND age > 30;
+
+// n de golos marcados por uma equipa
+SELECT team_name, SUM(stats['goals']) FROM players_by_team  WHERE team_name = 'Team 2';
+
+// Obter o jogador mais nomo de uma dada equipa
+SELECT name, MIN(age) FROM players_by_team  WHERE team_name = 'Team 2';
+
+// Contar os jogadores por equipa
+select team_name, COUNT(*) from players_by_team  group by team_name;
+
+// Obter o numero de equipas por campeonato
+select league_country,count(*) as n_teams_by_league from teams_by_league group by league_country;
+
+// Ultimos 3 jogos entre 2 equipas
+SELECT * 
+FROM matches  
+WHERE home_team_name = 'Team 1'    
+AND away_team_name = 'Team 2'  
+ORDER BY date DESC  
+LIMIT 3;
+
+// Historico the golos marcados pela equipa da casa em passados jogos entre 2 equipas
+SELECT home_team_name, away_team_name, date, SUM(goals_home)  
+FROM matches   
+WHERE home_team_name = 'Team 1'     
+AND away_team_name = 'Team 2';
+
+
+
+
+
+CREATE AGGREGATE avg_goals_per_position(TEXT) 
+SFUNC update_goals 
+STYPE tuple<int, int> 
+FINALFUNC finalize_avg_goals;
+
+
+public static Tuple<Integer, Integer> update_goals(Tuple<Integer, Integer> state, Text position, Map<String, Integer> stats) {
+    // Assume que "goals" está dentro do MAP stats
+    int goals = stats.getOrDefault("goals", 0);
+    int totalGoals = state.get(0) + goals;
+    int playerCount = state.get(1) + 1;
+
+    return Tuple.of(totalGoals, playerCount);
+}
+
+
+public static Integer finalize_avg_goals(Tuple<Integer, Integer> state) {
+    int totalGoals = state.get(0);
+    int playerCount = state.get(1);
+
+    if (playerCount == 0) {
+        return 0;  // Se não houver jogadores, retorna 0.
+    }
+
+    return totalGoals / playerCount;  // Média de gols
+}
+
+
+SELECT league_country, name AS team_name, avg_goals_per_position('Midfielder') 
+FROM players 
+WHERE position = 'Midfielder' 
+GROUP BY league_country, team_name;
+
+
+
+
+
+
