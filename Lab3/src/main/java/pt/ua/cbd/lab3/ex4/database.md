@@ -1,13 +1,16 @@
 ## Exemplo: Futebol (gestão de equipas, jogadores e jogos)
 
-
-
 ```sql
-CREATE KEYSPACE IF NOT EXISTS futebol_keyspace
-WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 1};
+-- Drop the keyspace if it exists to avoid conflicts
+DROP KEYSPACE IF EXISTS football_keyspace;
 
-USE futebol_keyspace;
+-- Create keyspace
+CREATE KEYSPACE football_keyspace
+WITH replication = {{'class': 'SimpleStrategy', 'replication_factor': 1}};
 
+USE football_keyspace;
+
+-- Create tables
 CREATE TABLE teams (
     name                TEXT,
     city                TEXT,
@@ -79,5 +82,37 @@ CREATE TABLE leagues (
 
 CREATE INDEX ON players (position);
 CREATE INDEX ON teams (stadium);
+
+CREATE FUNCTION IF NOT EXISTS football_keyspace.compute_avg_players(
+    state frozen<tuple<int, int>>
+)
+CALLED ON NULL INPUT
+RETURNS double
+LANGUAGE java
+AS $$
+    int totalPlayers = state.get(0, Integer.class);
+    int totalTeams = state.get(1, Integer.class);
+    return totalTeams == 0 ? 0.0 : (double) totalPlayers / totalTeams;
+$$;
+
+
+CREATE FUNCTION IF NOT EXISTS football_keyspace.update_avg_players(
+    state frozen<tuple<int, int>>, 
+    players set<int>
+)
+CALLED ON NULL INPUT
+RETURNS frozen<tuple<int, int>>
+LANGUAGE java
+AS $$
+    return state.set(0, state.get(0, Integer.class) + players.size(), Integer.class)
+                .set(1, state.get(1, Integer.class) + 1, Integer.class);
+$$;
+
+
+CREATE AGGREGATE IF NOT EXISTS football_keyspace.avg_players_per_team(set<int>)
+SFUNC update_avg_players
+STYPE frozen<tuple<int, int>>
+FINALFUNC compute_avg_players
+INITCOND (0, 0);
 
 ```

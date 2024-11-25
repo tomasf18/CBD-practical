@@ -2,8 +2,8 @@ import random
 from datetime import datetime, timedelta
 
 # Constants
-num_teams = 3
-num_players = 30
+num_teams = 10
+num_players = 50
 num_matches = 20
 num_leagues = 25
 num_events = 40
@@ -112,18 +112,40 @@ CREATE TABLE leagues (
     PRIMARY KEY ((country)) -- Unique league in a country (only care about 1st division leagues)
 );
 
-CREATE TABLE match_events (
-    player_id           INT,
-    home_team_name      TEXT,
-    away_team_name      TEXT,
-    date                DATE,
-    event_type          TEXT,
-    event_time          INT, -- Minute
-    PRIMARY KEY ((player_id, home_team_name, away_team_name, date))
-);
-
 CREATE INDEX ON players (position);
 CREATE INDEX ON teams (stadium);
+
+CREATE FUNCTION IF NOT EXISTS football_keyspace.compute_avg_players(
+    state frozen<tuple<int, int>>
+)
+CALLED ON NULL INPUT
+RETURNS double
+LANGUAGE java
+AS $$
+    int totalPlayers = state.get(0, Integer.class);
+    int totalTeams = state.get(1, Integer.class);
+    return totalTeams == 0 ? 0.0 : (double) totalPlayers / totalTeams;
+$$;
+
+
+CREATE FUNCTION IF NOT EXISTS football_keyspace.update_avg_players(
+    state frozen<tuple<int, int>>, 
+    players set<int>
+)
+CALLED ON NULL INPUT
+RETURNS frozen<tuple<int, int>>
+LANGUAGE java
+AS $$
+    return state.set(0, state.get(0, Integer.class) + players.size(), Integer.class)
+                .set(1, state.get(1, Integer.class) + 1, Integer.class);
+$$;
+
+
+CREATE AGGREGATE IF NOT EXISTS football_keyspace.avg_players_per_team(set<int>)
+SFUNC update_avg_players
+STYPE frozen<tuple<int, int>>
+FINALFUNC compute_avg_players
+INITCOND (0, 0);
 """
 
 # Generate data and populate the database
@@ -170,15 +192,5 @@ with open("insert_data.cql", "w") as file:
         name = f"League {i}"
         teams = {random_team() for _ in range(random.randint(2, num_teams))}
         file.write(f"INSERT INTO leagues (country, name, teams) VALUES ('{country}', '{name}', {teams});\n")
-
-    # Insert data into match_events
-    for i in range(1, num_events + 1):
-        player_id = random.randint(1, num_players)
-        home_team_name = random_team()
-        away_team_name = random_team()
-        date = random_date().strftime('%Y-%m-%d')
-        event_type = random_event()
-        event_time = random.randint(1, 90)
-        file.write(f"INSERT INTO match_events (player_id, home_team_name, away_team_name, date, event_type, event_time) VALUES ({player_id}, '{home_team_name}', '{away_team_name}', '{date}', '{event_type}', {event_time});\n")
 
 print("Data insertion script created: insert_data.cql")
