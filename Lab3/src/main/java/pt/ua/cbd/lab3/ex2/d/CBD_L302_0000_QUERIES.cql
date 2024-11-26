@@ -139,8 +139,50 @@ SELECT * FROM videos
 SELECT tag, count(video_id) FROM videos_por_tag
 group by tag;
 
-// 12.
+
+// 12. Todos os utilizadores que se registaram no dia X
+
+CREATE TABLE utilizadores_por_data (
+    data_registo    TIMESTAMP,
+    username        TEXT, 
+    nome            TEXT,
+    email           TEXT,
+    PRIMARY KEY ((data_registo), username)
+);
+
+SELECT data_registo, COUNT(*) AS numero_utilizadores FROM utilizadores_por_data WHERE data_registo = '2024-10-28';
 
 // 13.
+Numero de videos com o mesmo nome, ordenados por video id
+CREATE TABLE videos_nome (
+    nome                TEXT,
+    video_id            INT, 
+    autor_username      TEXT, 
+    data_upload         TIMESTAMP,
+    descricao           TEXT,
+    tags                SET<TEXT>,
+    PRIMARY KEY ((nome), video_id)
+);
+
+SELECT nome, COUNT(*) AS num_videos
+FROM videos_nome
+WHERE nome = 'Video 6'
+ORDER BY video_id ASC;
+
 
 // 14.
+
+CREATE TABLE eventos_video_data (
+    username            TEXT,
+    data_evento         DATA,
+    video_id            INT, 
+    tempo_video         INT,
+    tipo_evento         TEXT,
+    PRIMARY KEY ((username), data_evento, video_id, tempo_video)
+);
+
+
+SELECT video_id, data_evento, tempo_video, tipo_evento 
+FROM eventos_video_data 
+WHERE username = 'user14' 
+AND data_evento > '2024-09-11';

@@ -10,6 +10,14 @@ CREATE TABLE utilizadores (
     data_registo    TIMESTAMP,
     PRIMARY KEY (username)
 );
+
+CREATE TABLE utilizadores_por_data (
+    data_registo    DATE,
+    username        TEXT, 
+    nome            TEXT,
+    email           TEXT,
+    PRIMARY KEY ((data_registo), username)
+);
 ```
 
 #### Vídeos
@@ -33,6 +41,16 @@ CREATE TABLE videos_autor (
     descricao           TEXT,
     tags                SET<TEXT>,
     PRIMARY KEY ((autor_username), data_upload, video_id)
+);
+
+CREATE TABLE videos_nome (
+    nome                TEXT,
+    video_id            INT, 
+    autor_username      TEXT, 
+    data_upload         TIMESTAMP,
+    descricao           TEXT,
+    tags                SET<TEXT>,
+    PRIMARY KEY ((nome), video_id)
 );
 
 CREATE TABLE videos_por_tag (
@@ -97,6 +115,15 @@ CREATE TABLE eventos_video (
     data_evento         TIMESTAMP,
     tempo_video         INT,
     PRIMARY KEY ((username), video_id, data_evento, tempo_video)
+);
+
+CREATE TABLE eventos_video_data (
+    video_id            INT, 
+    data_evento         DATE,
+    username            TEXT,
+    tempo_video         INT,
+    tipo_evento         TEXT,
+    PRIMARY KEY ((video_id), data_evento, username, tempo_video)
 );
 ```
 

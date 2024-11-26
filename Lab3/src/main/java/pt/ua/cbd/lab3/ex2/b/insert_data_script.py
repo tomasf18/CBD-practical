@@ -27,6 +27,14 @@ CREATE TABLE utilizadores (
     data_registo    TIMESTAMP
 );
 
+CREATE TABLE utilizadores_por_data (
+    data_registo    DATE,
+    username        TEXT, 
+    nome            TEXT,
+    email           TEXT,
+    PRIMARY KEY ((data_registo), username)
+);
+
 CREATE TABLE videos (
     video_id            INT, 
     autor_username      TEXT, 
@@ -45,6 +53,16 @@ CREATE TABLE videos_autor (
     descricao           TEXT,
     tags                SET<TEXT>,
     PRIMARY KEY ((autor_username), data_upload, video_id)
+);
+
+CREATE TABLE videos_nome (
+    nome                TEXT,
+    video_id            INT, 
+    autor_username      TEXT, 
+    data_upload         TIMESTAMP,
+    descricao           TEXT,
+    tags                SET<TEXT>,
+    PRIMARY KEY ((nome), video_id)
 );
 
 CREATE TABLE videos_por_tag (
@@ -97,6 +115,15 @@ CREATE TABLE eventos_video (
     PRIMARY KEY ((username), video_id, data_evento, tempo_video)
 );
 
+CREATE TABLE eventos_video_data (
+    username            TEXT,
+    data_evento         DATE,
+    video_id            INT, 
+    tempo_video         INT,
+    tipo_evento         TEXT,
+    PRIMARY KEY ((username), data_evento, video_id, tempo_video)
+);
+
 CREATE TABLE ratings_video (
     video_id            INT,
     autor_rating        TEXT,
@@ -136,6 +163,7 @@ with open("insert_data.cql", "w") as file:
         email = f"user{i}@example.com"
         data_registo = random_timestamp().isoformat()
         file.write(f"INSERT INTO utilizadores (username, nome, email, data_registo) VALUES ('{username}', '{nome}', '{email}', '{data_registo}');\n")
+        file.write(f"INSERT INTO utilizadores_por_data (data_registo, username, nome, email) VALUES ('{data_registo[:10]}', '{username}', '{nome}', '{email}');\n")
 
     # Insert data into `videos`
     for i in range(1, num_videos + 1):
@@ -149,7 +177,7 @@ with open("insert_data.cql", "w") as file:
         for tag in set(tags_set):
             file.write(f"INSERT INTO videos_por_tag (tag, video_id, autor_username, nome, descricao, data_upload) VALUES ('{tag}', {video_id}, '{autor_username}', '{nome}', '{descricao}', '{data_upload}');\n")
 
-    # Insert data into `videos_autor`
+    # Insert data into `videos_autor` and `videos_nome`
     for i in range(1, num_videos + 1):
         autor_username = random_username()
         video_id = i
@@ -158,6 +186,7 @@ with open("insert_data.cql", "w") as file:
         tags, tags_set = random_tags()
         data_upload = random_timestamp().isoformat()
         file.write(f"INSERT INTO videos_autor (autor_username, video_id, nome, descricao, tags, data_upload) VALUES ('{autor_username}', {video_id}, '{nome}', '{descricao}', {tags}, '{data_upload}');\n")
+        file.write(f"INSERT INTO videos_nome (nome, video_id, autor_username, data_upload, descricao, tags) VALUES ('{nome}', {video_id}, '{autor_username}', '{data_upload}', '{descricao}', {tags});\n")
 
     for _ in range(num_comments):
         video_id = random.randint(1, num_videos)
@@ -204,6 +233,7 @@ with open("insert_data.cql", "w") as file:
         data_evento = random_timestamp().isoformat()
         tempo_video = random.randint(0, 500)
         file.write(f"INSERT INTO eventos_video (video_id, username, tipo_evento, data_evento, tempo_video) VALUES ({video_id}, '{username}', '{tipo_evento}', '{data_evento}', {tempo_video});\n")
+        file.write(f"INSERT INTO eventos_video_data (username, data_evento, video_id, tempo_video, tipo_evento) VALUES ('{username}', '{data_evento[:10]}', {video_id}, {tempo_video}, '{tipo_evento}');\n")
 
     # Insert data into `ratings_video`
     for _ in range(num_ratings):
