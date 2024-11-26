@@ -1,5 +1,7 @@
 package pt.ua.cbd.lab3.ex4;
 
+import java.util.Set;
+
 import com.datastax.oss.driver.api.core.CqlSession;
 
 public class LeagueQueries {
@@ -10,14 +12,14 @@ public class LeagueQueries {
     }
 
     // Update 9: Add a team to the league
-    public void addTeamToLeague(String country, String teamName) {
-        String query = "UPDATE leagues SET teams = teams + {?} WHERE country = ?";
+    public void addTeamToLeague(String country, Set<String> teamName) {
+        String query = "UPDATE leagues SET teams = teams + ? WHERE country = ?";
         session.execute(query, teamName, country);
     }
 
     // Update 10: Remove a team from the league
-    public void removeTeamFromLeague(String country, String teamName) {
-        String query = "UPDATE leagues SET teams = teams - {?} WHERE country = ?";
+    public void removeTeamFromLeague(String country, Set<String> teamName) {
+        String query = "UPDATE leagues SET teams = teams - ? WHERE country = ?";
         session.execute(query, teamName, country);
     }
 

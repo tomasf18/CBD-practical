@@ -12,7 +12,7 @@ public class PlayerQueries {
     // Update 1: Update a stat in the player's stats map
     public void updatePlayerStat(String name, int playerId, String statKey, int new_stat) {
         String query = "UPDATE players SET stats[?] = ? WHERE name = ? AND player_id = ?";
-        session.execute(query, statKey, statKey, new_stat, name, playerId);
+        session.execute(query, statKey, new_stat, name, playerId);
         String query2 = "UPDATE players_by_id SET stats[?] = ? WHERE player_id = ?";
         session.execute(query2, statKey, new_stat, playerId);
     }

@@ -1,6 +1,8 @@
 package pt.ua.cbd.lab3.ex4;
 
 import com.datastax.oss.driver.api.core.CqlSession;
+
+import java.util.List;
 import java.util.Set;
 
 public class TeamQueries {
@@ -17,8 +19,8 @@ public class TeamQueries {
     }
 
     // Update 3: Add an achievement to a team
-    public void addAchievement(String teamName, String achievement) {
-        String query = "UPDATE teams SET achievements = achievements + [?] WHERE name = ?";
+    public void addAchievement(String teamName, List<String> achievement) {
+        String query = "UPDATE teams SET achievements = achievements + ? WHERE name = ?";
         session.execute(query, achievement, teamName);
     }
 
@@ -29,8 +31,8 @@ public class TeamQueries {
     }
 
     // Update 5: Remove a specific achievement from a team
-    public void removeAchievement(String teamName, String achievement) {
-        String query = "UPDATE teams SET achievements = achievements - [?] WHERE name = ?";
+    public void removeAchievement(String teamName, List<String> achievement) {
+        String query = "UPDATE teams SET achievements = achievements - ? WHERE name = ?";
         session.execute(query, achievement, teamName);
     }
 
@@ -40,9 +42,22 @@ public class TeamQueries {
         session.execute(query, teamName);
     }
 
-    // Team with the stadium 
+    // Team with the stadium
     public void getTeamsByStadium(String stadium) {
         String query = "SELECT name, players, achievements FROM teams WHERE stadium = ?";
         session.execute(query, stadium);
+    }
+
+    // Average number of players per team (float number)
+    public void getAverageNumberOfPlayersPerTeam() {
+        String query = "SELECT avg_players_per_team(players) AS avg_players FROM teams";
+        System.out.println("Query: " + query);
+        session.execute(query);
+    }
+
+    // Number of players per team
+    public void getNumberOfPlayersPerTeam(String teamName) {
+        String query = "SELECT count_players(players) AS number_of_players FROM teams where name = ?";
+        session.execute(query, teamName);
     }
 }

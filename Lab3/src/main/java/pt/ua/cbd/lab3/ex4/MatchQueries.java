@@ -1,7 +1,10 @@
 package pt.ua.cbd.lab3.ex4;
 
 import com.datastax.oss.driver.api.core.CqlSession;
+
+import java.util.List;
 import java.util.Set;
+import java.time.LocalDate;
 
 public class MatchQueries {
     private final CqlSession session;
@@ -10,29 +13,31 @@ public class MatchQueries {
         this.session = session;
     }
 
-    // Update 6: Add an event to a match's event list
-    public void addMatchEvent(String homeTeam, String awayTeam, String date, String event) {
-        String query = "UPDATE matches SET events = events + [?] WHERE home_team_name = ? AND away_team_name = ? AND date = ?";
-        session.execute(query, event, homeTeam, awayTeam, date);
-    }
-
-    // Update 7: Remove a specific event from a match's event list
-    public void removeMatchEvent(String homeTeam, String awayTeam, String date, String event) {
-        String query = "UPDATE matches SET events = events - [?] WHERE home_team_name = ? AND away_team_name = ? AND date = ?";
-        session.execute(query, event, homeTeam, awayTeam, date);
-    }
-
-    // Update 8: Add multiple events to a match
-    public void addMultipleEventsToMatch(String homeTeam, String awayTeam, String date, Set<String> events) {
+    
+    public void addMatchEvent(String homeTeam, String awayTeam, String date, List<String> event) {
+        LocalDate matchDate = LocalDate.parse(date); // Convert date string to LocalDate
         String query = "UPDATE matches SET events = events + ? WHERE home_team_name = ? AND away_team_name = ? AND date = ?";
-        session.execute(query, events, homeTeam, awayTeam, date);
+        session.execute(query, event, homeTeam, awayTeam, matchDate);
     }
-
-    // Delete 4: Clear all events from a match
+    
+    public void removeMatchEvent(String homeTeam, String awayTeam, String date, List<String> event) {
+        LocalDate matchDate = LocalDate.parse(date); // Convert date string to LocalDate
+        String query = "UPDATE matches SET events = events - ? WHERE home_team_name = ? AND away_team_name = ? AND date = ?";
+        session.execute(query, event, homeTeam, awayTeam, matchDate);
+    }
+    
+    public void addMultipleEventsToMatch(String homeTeam, String awayTeam, String date, Set<String> events) {
+        LocalDate matchDate = LocalDate.parse(date); // Convert date string to LocalDate
+        String query = "UPDATE matches SET events = events + ? WHERE home_team_name = ? AND away_team_name = ? AND date = ?";
+        session.execute(query, events, homeTeam, awayTeam, matchDate);
+    }
+    
     public void clearMatchEvents(String homeTeam, String awayTeam, String date) {
+        LocalDate matchDate = LocalDate.parse(date); // Convert date string to LocalDate
         String query = "DELETE events FROM matches WHERE home_team_name = ? AND away_team_name = ? AND date = ?";
-        session.execute(query, homeTeam, awayTeam, date);
+        session.execute(query, homeTeam, awayTeam, matchDate);
     }
+    
 
     // Get the last 3 matches between 2 teams
     public void getLast3Matches(String team1, String team2) {
