@@ -38,9 +38,8 @@ Clean: **Important** Execute the clean-up before
 To insert data into the database, you can use the `cqlsh` command line tool.
 
 ```bash
-cat insert_data.cql | docker compose exec -T cassandra cqlsh
+cat CBD_L302_112981_SEEDDATA.cql | docker compose exec -T cassandra cqlsh
 ```
-
 
 ```bash
 docker run --rm cassandra:4 cat /etc/cassandra/cassandra.yaml > cassandra.yaml 

@@ -45,8 +45,8 @@ public class Main {
             System.out.println("-------------------------------------------------");
 
             // 4.a. Os últimos 5 eventos de determinado vídeo realizados por um utilizador;
-            System.out.println("\nUltimos 5 eventos do video 23 feitos pelo user9:");
-            ResultSet eventos = q.query4a("user9", 23);
+            System.out.println("\nUltimos 5 eventos do video 10 feitos pelo user12:");
+            ResultSet eventos = q.query4a("user12", 10);
             eventos.forEach(row -> {
                 System.out.println("-------------------------------------------------");
                 System.out.println("Tipo Evento: " + row.getString("tipo_evento"));
@@ -57,8 +57,8 @@ public class Main {
             System.out.println("-------------------------------------------------");
 
             // 4.c. Todos os eventos de determinado utilizador do tipo "pause"
-            System.out.println("\nEventos de pause do user1:");
-            ResultSet eventosPause = q.query4c("user1");
+            System.out.println("\nEventos de pause do user12:");
+            ResultSet eventosPause = q.query4c("user12");
             eventosPause.forEach(row -> {
                 System.out.println("-------------------------------------------------");
                 System.out.println("Tipo Evento: " + row.getString("tipo_evento"));
@@ -69,8 +69,8 @@ public class Main {
             System.out.println("-------------------------------------------------");
 
             // 8. Todos os comentarios (dos videos) que determinado utilizador esta a seguir (following);
-            System.out.println("\nComentarios dos videos que o user3 esta a seguir:");
-            ResultSet comentarios = q.query8("user3");
+            System.out.println("\nComentarios dos videos que o user10 esta a seguir:");
+            ResultSet comentarios = q.query8("user10");
             comentarios.forEach(row -> {
                 System.out.println("-------------------------------------------------");
                 System.out.println("ID Video: " + row.getInt("video_id"));

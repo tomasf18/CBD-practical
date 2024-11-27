@@ -2,7 +2,7 @@ import random
 from datetime import datetime, timedelta
 
 # Define the number of records to generate for each table
-num_users = 17
+num_users = 20
 num_videos = 25
 num_comments = 30
 num_followers = 15
@@ -152,7 +152,7 @@ def random_tags():
 
 
 # Open the output file
-with open("insert_data.cql", "w") as file:
+with open("CBD_L302_112981_SEEDDATA.cql", "w") as file:
     
     file.write(commands)
     

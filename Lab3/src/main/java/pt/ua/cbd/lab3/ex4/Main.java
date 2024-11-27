@@ -13,6 +13,8 @@ public class Main {
             MatchQueries matchQueries = new MatchQueries(session);
             LeagueQueries leagueQueries = new LeagueQueries(session);
 
+            System.out.println("\n========================================================");
+
             // Test PlayerQueries
             System.out.println("Updating Player 1 stats...");
             playerQueries.updatePlayerStat("Player 1", 1, "goals", 25);
@@ -20,22 +22,22 @@ public class Main {
             System.out.println("Deleting 'assists' stat from Player 2...");
             playerQueries.deletePlayerStat("Player 2", 2, "assists");
 
-            System.out.println("Getting youngest players in Team 1:");
+            System.out.println("Getting youngest players in Team 1...");
             playerQueries.getYoungestPlayersByTeam("Team 1");
 
-            System.out.println("Getting players older than 30 in Team 2:");
+            System.out.println("Getting players older than 30 in Team 2...");
             playerQueries.getPlayersOlderThanAge("Team 2", 30);
 
-            System.out.println("Getting total goals scored by Team 1:");
+            System.out.println("Getting total goals scored by Team 1...");
             playerQueries.getGoalsScoredByTeam("Team 1");
 
-            System.out.println("Getting youngest player in Team 3:");
+            System.out.println("Getting youngest player in Team 3...");
             playerQueries.getYoungestPlayerInTeam("Team 3");
 
-            System.out.println("Counting players in Team 4:");
+            System.out.println("Counting players in Team 4...");
             playerQueries.getPlayersCountByTeam("Team 4");
 
-            System.out.println("Getting all players in position Forward:");
+            System.out.println("Getting all players in position Forward...");
             playerQueries.getPlayersByPosition("Forward");
 
             // Test TeamQueries
@@ -54,10 +56,10 @@ public class Main {
             System.out.println("Clearing all players from Team 9...");
             teamQueries.clearTeamPlayers("Team 9");
 
-            System.out.println("Getting teams by stadium 'Manchester Stadium':");
+            System.out.println("Getting teams by stadium 'Manchester Stadium'...");
             teamQueries.getTeamsByStadium("Manchester Stadium");
 
-            // System.out.println("Getting average number of players per team:");
+            // System.out.println("Getting average number of players per team...");
             // teamQueries.getAverageNumberOfPlayersPerTeam();
             
             // cqlsh:football_keyspace> SELECT avg_players_per_team(players) AS avg_players FROM teams;
@@ -66,7 +68,7 @@ public class Main {
             // -------------
             //         4.5
 
-            System.out.println("Getting number of players in Team 10:");
+            System.out.println("Getting number of players in Team 10...");
             teamQueries.getNumberOfPlayersPerTeam("Team 10");
 
             // Test MatchQueries
@@ -82,10 +84,10 @@ public class Main {
             System.out.println("Clearing all events for match Team 8 vs Team 5 on 2023-06-17...");
             matchQueries.clearMatchEvents("Team 8", "Team 5", "2023-06-17");
             
-            System.out.println("Getting last 3 matches between Team 7 and Team 1:");
+            System.out.println("Getting last 3 matches between Team 7 and Team 1...");
             matchQueries.getLast3Matches("Team 7", "Team 1");
             
-            System.out.println("Getting total goals scored by Team 7 as home team in history vs Team 1:");
+            System.out.println("Getting total goals scored by Team 7 as home team in history vs Team 1...");
             matchQueries.getHomeTeamGoalsHistory("Team 7", "Team 1");            
 
             // Test LeagueQueries
@@ -98,8 +100,11 @@ public class Main {
             System.out.println("Clearing all teams from League 6 in Madrid...");
             leagueQueries.clearLeagueTeams("Madrid");
             
-            System.out.println("Getting number of teams in League 7 in Berlin:");
+            System.out.println("Getting number of teams in League 7 in Berlin...");
             leagueQueries.getTeamsCountByLeague("Berlin");
+
+            System.out.println("========================================================");
+            System.out.println("\nAll queries executed successfully!\n");
             
 
         } catch (Exception e) {
