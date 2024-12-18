@@ -2,7 +2,27 @@
 
 ## Lab04 -  Ex 4.4.c)
 
-### Query 1 - Mostra os dados de um Device específico e as suas relações com o IP, Country e Organization
+
+### Load dos Dados
+
+```sql
+LOAD CSV WITH HEADERS FROM 'file:///resources/lab44.csv' AS row
+MERGE (ip:IP {address: row.IP})
+SET ip.timestamp = row.Timestamp, ip.hostname = row.Hostnames
+MERGE (country:Country {name: row.Country})
+MERGE (organization:Organization {name: row.Organization})
+MERGE (port:Port {number: toInteger(row.Port)})
+MERGE (device:Device {name: row.Device})
+SET device.banner = row.Banner
+WITH ip, country, organization, port, device
+MERGE (ip)-[:LOCATED_IN]->(country)
+MERGE (port)-[:ON]->(ip)
+MERGE (device)-[:LISTENING_ON]->(port)
+MERGE (organization)-[:OWNS]->(ip)
+```
+
+
+### Query 1 - Mostra os dados de um Device específico (incluindo as suas relações com o IP, Country e Organization)
 
 #### Cypher:
 ```sql
@@ -30,8 +50,8 @@ Device Details:
 ---------------------------------------------------------------------------
 ```
 
-
 **Nota:** O resultado completo e formatado pode ser encontrado em [query1.json](resultados_4c_json/query1.json)
+
 
 ### Query 2 - Mostra os dados de um IP específico e as suas relações com o Device, Port, Country e Organization
 
@@ -608,7 +628,7 @@ Organization Details:
 **Nota:** O resultado completo e formatado pode ser encontrado em [query8.json](resultados_4c_json/query8.json)
 
 
-### Query 9 - Mostra todos os Ports e os Devices que estão "listening" nesses Ports, agrupados (i.e., por ordem) por Country
+### Query 9 - Mostra todos os Ports e os Devices que estão "listening" nesses Ports,  por ordem de Country
 
 #### Cypher:
 ```sql

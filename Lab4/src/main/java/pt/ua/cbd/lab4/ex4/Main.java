@@ -18,7 +18,7 @@ public class Main {
         Driver driver = GraphDatabase.driver(uri);
 
         // Load dataset to Neo4j
-        loadDataset(driver);
+        load(driver);
 
         // Queries
         System.out.println("\n\n");
@@ -47,7 +47,7 @@ public class Main {
         driver.close();
     }
 
-    private static void loadDataset(Driver driver) {
+    private static void load(Driver driver) {
         try (Session session = driver.session()) {
             session.run("LOAD CSV WITH HEADERS FROM 'file:///" + filePath + "' AS row " +
                     "MERGE (ip:IP {address: row.IP}) " +
