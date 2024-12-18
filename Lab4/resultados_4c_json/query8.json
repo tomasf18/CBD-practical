@@ -1,0 +1,22 @@
+[
+    {
+      "organization_name": "General Electric",
+      "device_count": 100
+    },
+    {
+      "organization_name": "Sony",
+      "device_count": 100
+    },
+    {
+      "organization_name": "PwC",
+      "device_count": 99
+    },
+    {
+      "organization_name": "Volkswagen",
+      "device_count": 99
+    },
+    {
+      "organization_name": "KPMG",
+      "device_count": 99
+    }
+]
