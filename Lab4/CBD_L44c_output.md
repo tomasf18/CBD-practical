@@ -1,6 +1,6 @@
 # 112981
 
-## Lab4 - Exercício 4.c)
+## Lab04 -  Ex 4.4.c)
 
 ### Query 1 - Mostra os dados de um Device específico e as suas relações com o IP, Country e Organization
 
